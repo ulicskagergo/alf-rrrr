@@ -1,0 +1,10 @@
+name: Build and test gazer
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Hello World
+        run: echo "Hello World!"
