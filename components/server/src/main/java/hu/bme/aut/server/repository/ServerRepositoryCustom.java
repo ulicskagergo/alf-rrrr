@@ -1,2 +1,4 @@
-package hu.bme.aut.server.repository;public interface ServerRepositoryCustom {
+package hu.bme.aut.server.repository;
+
+public interface ServerRepositoryCustom {
 }

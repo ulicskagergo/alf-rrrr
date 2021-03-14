@@ -1,10 +1,13 @@
 package hu.bme.aut.server.domain;
 
+import org.json.simple.JSONObject;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Entity
-public class Data {
+public class LightData {
 
     @Id
     @GeneratedValue
@@ -57,7 +60,17 @@ public class Data {
 
     @Override
     public String toString() {
-        return String.format("[ %d, %s, %d ]", id, measureDate, threshold);
+        return String.format("[ %d, %s, %b, %d ]", id, measureDate, isOn, threshold);
+    }
+
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("id", id);
+        obj.put("measure_date", measureDate);
+        obj.put("is_on", isOn);
+        obj.put("threshold", threshold);
+        System.out.println(obj);
+        return obj;
     }
 
     @Override
@@ -76,7 +89,7 @@ public class Data {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Data other = (Data) obj;
+        LightData other = (LightData) obj;
         if (id == null) {
             if (other.id != null)
                 return false;

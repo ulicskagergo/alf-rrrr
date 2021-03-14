@@ -1,20 +1,10 @@
 package hu.bme.aut.server.repository;
 
-import hu.bme.aut.server.domain.Server;
+import hu.bme.aut.server.domain.LightData;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 @Repository
-public class ServerRepository {
+public interface ServerRepository extends JpaRepository<LightData, Integer> {
 
-    @PersistenceContext
-    private EntityManager em;
-
-    @Transactional
-    public void save(Server server) {
-        em.persist(server);
-    }
 }
