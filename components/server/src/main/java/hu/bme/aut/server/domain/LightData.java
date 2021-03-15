@@ -1,18 +1,21 @@
 package hu.bme.aut.server.domain;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity(name = "LightData")
+@Entity
+@Table(name = "LightData")
 public class LightData {
 
     //TODO: Add validations
 
     @Id
     @Column(name = "id")
-    @GeneratedValue
+    //@GeneratedValue
+    //@GenericGenerator(name = "inc-gen", strategy = "increment")
     private Integer id;
 
     @Column(name = "measure_date")
