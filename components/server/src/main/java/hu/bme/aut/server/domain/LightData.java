@@ -3,13 +3,15 @@ package hu.bme.aut.server.domain;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
-@Entity
+@Entity(name = "LightData")
 public class LightData {
 
+    //TODO: Add validations
+
     @Id
+    @Column(name = "id")
     @GeneratedValue
     private Integer id;
 
@@ -19,7 +21,32 @@ public class LightData {
     @Column(name = "is_on")
     private boolean isOn;
 
+    @Column(name = "threshold")
     private int threshold;
+
+    public LightData(){}
+
+    public LightData(Integer id, LocalDateTime measureDate, boolean isOn, int threshold) {
+        super();
+        this.id = id;
+        this.measureDate = measureDate;
+        this.isOn = isOn;
+        this.threshold = threshold;
+    }
+
+    /*public LightData(LocalDateTime measureDate, boolean isOn, int threshold) {
+        super();
+        this.measureDate = measureDate;
+        this.isOn = isOn;
+        this.threshold = threshold;
+    }
+
+    public LightData(boolean isOn, int threshold) {
+        super();
+        this.measureDate = LocalDateTime.now();
+        this.isOn = isOn;
+        this.threshold = threshold;
+    }*/
 
     @PrePersist
     private void prePersist() {
