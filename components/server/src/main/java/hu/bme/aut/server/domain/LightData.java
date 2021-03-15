@@ -10,13 +10,12 @@ import java.time.LocalDateTime;
 @Table(name = "LightData")
 public class LightData {
 
-    //TODO: Add validations
+    //TODO add validations
 
     @Id
     @Column(name = "id")
-    //@GeneratedValue
-    //@GenericGenerator(name = "inc-gen", strategy = "increment")
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id = 0;
 
     @Column(name = "measure_date")
     private LocalDateTime measureDate;
@@ -29,9 +28,8 @@ public class LightData {
 
     public LightData(){}
 
-    public LightData(Integer id, LocalDateTime measureDate, boolean isOn, int threshold) {
+    public LightData(LocalDateTime measureDate, boolean isOn, int threshold) {
         super();
-        this.id = id;
         this.measureDate = measureDate;
         this.isOn = isOn;
         this.threshold = threshold;
@@ -99,6 +97,7 @@ public class LightData {
         obj.put("measure_date", measureDate);
         obj.put("is_on", isOn);
         obj.put("threshold", threshold);
+        // TODO write to file
         System.out.println(obj);
         return obj;
     }

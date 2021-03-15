@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 @SpringBootApplication
@@ -27,14 +28,32 @@ public class ServerDemoApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        LightData newData = new LightData(1004, LocalDateTime.of(2021,3,14,20,9), true, 33);
-        System.out.println(newData);
-        serverRepository.saveAndFlush(newData);
+        LightData lightData1 = saveAndFlushLightData("2021-03-14 20:09", true, 33);
+        LightData lightData2 = saveAndFlushLightData("2021-03-15 17:19", false, 0);
+        printLightDataBase(0, (int)serverRepository.count());
+    }
 
-        Pageable pageable = PageRequest.of(0,3, Sort.Direction.DESC, "id");
+    public LightData saveAndFlushLightData(LightData lightData) {
+        return serverRepository.saveAndFlush(lightData);
+    }
+
+    public LightData saveAndFlushLightData(LocalDateTime localDateTime, boolean isOn, Integer threshold) {
+        return serverRepository.saveAndFlush(new LightData(localDateTime, isOn, threshold));
+    }
+
+    public LightData saveAndFlushLightData(String localDateTime, boolean isOn, Integer threshold) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return serverRepository.saveAndFlush(new LightData(LocalDateTime.parse(localDateTime, dateTimeFormatter), isOn, threshold));
+    }
+
+    public void printLightDataBase(int pageNum, int size) {
+        Pageable pageable = PageRequest.of(pageNum, size);
         Page<LightData> page = serverRepository.findAll(pageable);
         page.forEach(System.out::println);
         page.forEach(LightData::toJSON);
     }
 
+    // TODO print with sort and direction
+
+    // TODO all CRUD
 }
