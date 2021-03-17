@@ -26,6 +26,8 @@ public class LightData {
     @Column(name = "threshold")
     private int threshold;
 
+    // TODO tényleges
+
     public LightData(){}
 
     public LightData(LocalDateTime measureDate, boolean isOn, int threshold) {
@@ -94,7 +96,7 @@ public class LightData {
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
-        obj.put("measure_date", measureDate);
+        obj.put("mIeasure_date", measureDate);
         obj.put("is_on", isOn);
         obj.put("threshold", threshold);
         // TODO write to file
