@@ -27,6 +27,7 @@ int main(){
       perror("Failed to open the device...");
       return errno;
    }
+   
    printf("Type in a short string to send to the kernel module:\n");
    scanf("%[^\n]%*c", stringToSend);                // Read in a string (with spaces)
    printf("Writing message to the device [%s].\n", stringToSend);
@@ -35,7 +36,7 @@ int main(){
       perror("Failed to write the message to the device.");
       return errno;
    }
- 
+
    printf("Press ENTER to read back from the device...\n");
    getchar();
  

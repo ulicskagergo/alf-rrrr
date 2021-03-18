@@ -21,14 +21,14 @@ MODULE_DESCRIPTION("Light and light sensor driver of the smart plant project");
 MODULE_VERSION("0.01");
 
 // light gpio
-static unsigned int gpioLights = 6;
+// static unsigned int gpioLights = 6;
 
 // sensor gpio
-static unsigned int gpioSensor = 26;
-static long start, end;         // jiffie values, used when measuring the elapsed time (to get the sensor value)
-static unsigned int measurement_ended;  // flag, used when measuring the sensor time
-static unsigned int irqNumber;          ///< Used to share the IRQ number within this file
-static irqreturn_t sensorgpio_irq_handler(unsigned int irq, void *dev_id, struct pt_regs *regs);
+// static unsigned int gpioSensor = 26;
+// static long start, end;         // jiffie values, used when measuring the elapsed time (to get the sensor value)
+// static unsigned int measurement_ended;  // flag, used when measuring the sensor time
+// static unsigned int irqNumber;          ///< Used to share the IRQ number within this file
+// static irqreturn_t sensorgpio_irq_handler(unsigned int irq, void *dev_id, struct pt_regs *regs);
 
 static int    majorNumber;                  // Stores the device number -- determined automatically
 static struct class*  ldrcharClass  = NULL; // The device-driver class struct pointer
@@ -84,35 +84,35 @@ static int __init ldr_init(void) // This will run when loaded
     printk(KERN_INFO "ldrChar: device class created correctly\n"); // Made it! device was initialized
     printk(KERN_INFO "HW Initialization: Lights off");
 
-    if (!gpio_is_valid(gpioLights)){
-        printk(KERN_INFO "GPIO_LIGHTS: invalid Light GPIO\n");
-        return -ENODEV;
-    }
-    gpio_request(gpioLights, "sysfs");          // request gpio of lights
-    gpio_direction_output(gpioLights, false);   // Set the gpio to be in output mode and off
-    gpio_export(gpioLights, false);            // Causes the gpio number of the lights to appear in /sys/class/gpio
-			                                // the bool argument prevents the direction from being changed
+    // if (!gpio_is_valid(gpioLights)){
+    //     printk(KERN_INFO "GPIO_LIGHTS: invalid Light GPIO\n");
+    //     return -ENODEV;
+    // }
+    // gpio_request(gpioLights, "sysfs");          // request gpio of lights
+    // gpio_direction_output(gpioLights, false);   // Set the gpio to be in output mode and off
+    // gpio_export(gpioLights, false);            // Causes the gpio number of the lights to appear in /sys/class/gpio
+	// 		                                // the bool argument prevents the direction from being changed
 
-    measurement_ended = 1;                  // no measurement in progress
+    // measurement_ended = 1;                  // no measurement in progress
 
-    if (!gpio_is_valid(gpioSensor)){
-        printk(KERN_INFO "GPIO_SENSOR: invalid Sensor GPIO\n");
-        return -ENODEV;
-    }
-    gpio_request(gpioSensor, "sysfs");          // request gpio of sensor
-    gpio_direction_output(gpioSensor, true);   // Set the gpio to be in output mode and on
-    gpio_export(gpioSensor, false);
+    // if (!gpio_is_valid(gpioSensor)){
+    //     printk(KERN_INFO "GPIO_SENSOR: invalid Sensor GPIO\n");
+    //     return -ENODEV;
+    // }
+    // gpio_request(gpioSensor, "sysfs");          // request gpio of sensor
+    // gpio_direction_output(gpioSensor, true);   // Set the gpio to be in output mode and on
+    // gpio_export(gpioSensor, false);
 
-    // GPIO numbers and IRQ numbers are not the same! This function performs the mapping
-    irqNumber = gpio_to_irq(gpioSensor);
-    printk(KERN_INFO "GPIO_SENSOR: The sensor input is mapped to IRQ: %d\n", irqNumber);
+    // // GPIO numbers and IRQ numbers are not the same! This function performs the mapping
+    // irqNumber = gpio_to_irq(gpioSensor);
+    // printk(KERN_INFO "GPIO_SENSOR: The sensor input is mapped to IRQ: %d\n", irqNumber);
 
-    int result = 0;
-    result = request_irq(irqNumber,             // The interrupt number requested
-                    (irq_handler_t) sensorgpio_irq_handler, // The pointer to the handler function below
-                    IRQF_TRIGGER_FALLING,   // Interrupt on rising edge (button press, not release)
-                    "ldr_sensor_gpio_handler",    // Used in /proc/interrupts to identify the owner
-                    NULL);                 // The *dev_id for shared interrupt lines, NULL is okay
+    // int result = 0;
+    // result = request_irq(irqNumber,             // The interrupt number requested
+    //                 (irq_handler_t) sensorgpio_irq_handler, // The pointer to the handler function below
+    //                 IRQF_TRIGGER_FALLING,   // Interrupt on rising edge (button press, not release)
+    //                 "ldr_sensor_gpio_handler",    // Used in /proc/interrupts to identify the owner
+    //                 NULL);                 // The *dev_id for shared interrupt lines, NULL is okay
     return 0;
 }
 
@@ -120,8 +120,8 @@ static void __exit ldr_exit(void)// This will run when unloaded
 {
     printk(KERN_INFO "Exiting driver...");
     printk(KERN_INFO "HW Deinit: Lights off"); 
-    gpio_set_value(gpioLights, false);              // Turn the LED off
-    gpio_unexport(gpioLights);                  // Unexport the LED GPIO
+    // gpio_set_value(gpioLights, false);              // Turn the LED off
+    // gpio_unexport(gpioLights);                  // Unexport the LED GPIO
 
     free_irq(irqNumber, NULL);               // Free the IRQ number, no *dev_id required in this case
     device_destroy(ldrcharClass, MKDEV(majorNumber, 0));     // remove the device
@@ -137,54 +137,54 @@ static struct timespec time;
 // the mock is a random int, but I'm not sure what type the GPIO value will be, so:
 // return type might change in the future!
 static long sensor_current_value(void) {
-    measurement_ended = 0;            // starting measurement
-    gpio_direction_input(gpioSensor); // Set the sensor GPIO to be an input (so the condensator discharges)
-    getnstimeofday(&time);
-    start = time.tv_nsec;
+    // measurement_ended = 0;            // starting measurement
+    // gpio_direction_input(gpioSensor); // Set the sensor GPIO to be an input (so the condensator discharges)
+    // getnstimeofday(&time);
+    // start = time.tv_nsec;
 
-    int successful = 1;
-    long current_jiffy, time_passed;
-    while(!measurement_ended) {
-        getnstimeofday(&time);
-        current_jiffy = time.tv_nsec;
-        time_passed = (current_jiffy - start)/1000; // time passed in us - "watchdog"
-        if(time_passed>=1000000) { successful = 0; break; } // timed out - measurement should only take around 10ms long
-        msleep(10);
-    } // waiting for interrupt to set the end time
-    gpio_direction_output(gpioSensor, true);   // Set the gpio to be in output mode and on (condensator is charged again)
+    // int successful = 1;
+    // long current_jiffy, time_passed;
+    // while(!measurement_ended) {
+    //     getnstimeofday(&time);
+    //     current_jiffy = time.tv_nsec;
+    //     time_passed = (current_jiffy - start)/1000; // time passed in us - "watchdog"
+    //     if(time_passed>=1000000) { successful = 0; break; } // timed out - measurement should only take around 10ms long
+    //     msleep(10);
+    // } // waiting for interrupt to set the end time
+    // gpio_direction_output(gpioSensor, true);   // Set the gpio to be in output mode and on (condensator is charged again)
 
-    if(successful) {
-        long diff = end - start;
-        long result = diff / 1000; // convert it to us 
-        printk(KERN_INFO "GPIO_SENSOR: Measurement is %lu microsec\n", result);
-        return result;
-    } else {
-        printk(KERN_INFO "GPIO_SENSOR: Measurement timed out\n");
-        return -1; // error value
-    }
+    // if(successful) {
+    //     long diff = end - start;
+    //     long result = diff / 1000; // convert it to us 
+    //     printk(KERN_INFO "GPIO_SENSOR: Measurement is %lu microsec\n", result);
+    //     return result;
+    // } else {
+    //     printk(KERN_INFO "GPIO_SENSOR: Measurement timed out\n");
+    //     return -1; // error value
+    // }
     // for testing without GPIO usage:
-    // int value; 
-    // get_random_bytes(&value, sizeof(value));
-    // return value%1024;
+    int value; 
+    get_random_bytes(&value, sizeof(value));
+    return value%1024;
 }
 
-static irqreturn_t sensorgpio_irq_handler(unsigned int irq, void *dev_id, struct pt_regs *regs) {
-    getnstimeofday(&time);
-    end = time.tv_nsec;
-    printk(KERN_INFO "GPIO_SENSOR: Interrupt! Measurement is done\n");
-    measurement_ended = 1;                   // measurement is done
-    return (irqreturn_t) IRQ_HANDLED;      // Announce that the IRQ has been handled correctly
-}
+// static irqreturn_t sensorgpio_irq_handler(unsigned int irq, void *dev_id, struct pt_regs *regs) {
+//     getnstimeofday(&time);
+//     end = time.tv_nsec;
+//     printk(KERN_INFO "GPIO_SENSOR: Interrupt! Measurement is done\n");
+//     measurement_ended = 1;                   // measurement is done
+//     return (irqreturn_t) IRQ_HANDLED;      // Announce that the IRQ has been handled correctly
+// }
 
 // turn light off
 static void light_turn_off(void) {
-    gpio_set_value(gpioLights, false);
+    // gpio_set_value(gpioLights, false);
     printk(KERN_INFO "ldrChar: Lights off");
 }
 
 // turn light on
 static void light_turn_on(void) {
-    gpio_set_value(gpioLights, true);
+    // gpio_set_value(gpioLights, true);
     printk(KERN_INFO "ldrChar: Lights on");
 }
 
