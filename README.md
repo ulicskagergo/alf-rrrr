@@ -1,11 +1,11 @@
-**Házi feladat**
+**Házi feladat - Smart Plant Light project**
 
 Csapatnév:
-
+rrrr
 Csapattagok Neptun kóddal:
-- Minta Mókus (ABC123)
-- Minta Mókus (ABC123)
-- Minta Mókus (ABC123)
+- Ádám Zsófia (SOSK6A)
+- Fucskár Patrícia (XKYAOO)
+- Ulicska Gergely (HTSB1W)
 
 Bemutató videó URL: 
 (Ugye minden olyan dolog szerepel benne a kiírásnak megfelelően, amire pontot szeretnétek kapni?)
@@ -15,12 +15,12 @@ Bemutató videó URL:
 
 Alap feladatok (maximális kapható pontokkal):
 - [ ] 7p: Yocto projekt alapokon készített szerver vagy kliens (házi feladatonként egyszer)
-- [ ] 5p: Beágyazott Linux rendszerben (de nem Yocto alapokon) készített szerver vagy kliens (feladatonként egyszer).
+- [x] 5p: Beágyazott Linux rendszerben (de nem Yocto alapokon) készített szerver vagy kliens (feladatonként egyszer).
 - [ ] 7p: QML alapú grafikus felület (benne legalább egy grafikon vagy egyéb rajzolás, egy lista, valamint menü)
 - [ ] 7p: REST API (benne új adat létrehozása, lekérdezés, adat módosítása, logikusan felépített URL-ekkel)
 - [ ] 8p: Több felhasználó, az authentikáció és különböző szerepkörök támogatása.
 - [ ] 7p: Linux alatt saját, jól átgondolt kommunikációs protokoll implementálása.
-- [ ] 15p: Linux alatt eszközvezérlő készítése
+- [x] 15p: Linux alatt eszközvezérlő készítése
 - [ ] 5p: Aszinkron üzenetsorral kommunikáló szerverek (vagyis több backend komponens van).
 - [ ] 5p: Java Persistence API használata, legalább 5 osztállyal.
 - [ ] 2p: Spring Data használata
@@ -34,7 +34,7 @@ Alap feladatok (maximális kapható pontokkal):
 Bónusz feladatok, melyek plusz utánajárást is igényelhetnek (maximális kapható pontokkal, csak ha az alap feladatokból időben leadva legalább 30 pont összegyűlt):
 - [ ] 5p: Linux alatt telepítő csomag készítése
 - [ ] 5p: Időzített taskok a backendben.
-- [ ] 5p: Linux alatt megszakítás kezelő készítése
+- [x] 5p: Linux alatt megszakítás kezelő készítése
 - [ ] 5p: E-mail küldés a backendben.
 - [ ] 3-10p: Jelentős automatikus teszt lefedettség, lefedettségtől függően pontozva
 - [ ] 3p: QRC mechanizmus használata nem QML fájlok tárolására és elérésére.
