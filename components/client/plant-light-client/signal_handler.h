@@ -5,9 +5,10 @@
 #include <QQmlApplicationEngine>
 #include <QDebug>
 #include <QQuickItem>
-#include <iostream>
+#include <string>
+#include<stdio.h>
 
-class ChangeHandler : public QObject{
+class ThresholdHandler : public QObject{
     Q_OBJECT
 
 public slots:

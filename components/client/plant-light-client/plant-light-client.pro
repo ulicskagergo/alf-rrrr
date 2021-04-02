@@ -8,6 +8,7 @@ CONFIG -= app_bundle
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        DaytimeHandler.cpp \
         MainWindowCpp.cpp \
         main.cpp \
         signalHandler.cpp
@@ -26,6 +27,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    daytime_handler.h \
     main.h \
     main_window_cpp.h \
     signal_handler.h

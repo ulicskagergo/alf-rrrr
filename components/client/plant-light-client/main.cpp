@@ -10,10 +10,16 @@ int main(int argc, char *argv[])
 
     QObject* rbuttons= MainWindowCpp::findItemByName(engine.rootObjects()[0], QString("ThresholdRadioList"));
 
-    ChangeHandler sh;
 
-    QObject::connect(rbuttons, SIGNAL(thresholdChanged(int)),
-            &sh, SLOT(thresholdSlot(int)));
+    ThresholdHandler sh;
+    DaytimeHandler dh;
+
+        QObject::connect(rbuttons, SIGNAL(thresholdChanged(int)),
+                &sh, SLOT(thresholdSlot(int)));
+
+        QObject::connect(rbuttons, SIGNAL(daytimeChanged(int)),
+                &dh, SLOT(daytimeSlot(int)));
+
 
 
     return app.exec();
