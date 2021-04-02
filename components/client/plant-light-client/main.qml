@@ -6,4 +6,6 @@ Window {
     height: 480
     visible: true
     title: qsTr("Hello World")
+
+    ThresholdRadioList{}
 }
