@@ -3,5 +3,6 @@ CREATE TABLE LightData (
     measure_date TIMESTAMP NOT NULL,
     is_on BOOLEAN NOT NULL,
     threshold INT NOT NULL,
+    actual_value INT NOT NULL,
     PRIMARY KEY(id)
 );

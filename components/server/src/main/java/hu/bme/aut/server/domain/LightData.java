@@ -26,15 +26,17 @@ public class LightData {
     @Column(name = "threshold")
     private int threshold;
 
-    // TODO tényleges
+    @Column(name = "actual_value")
+    private int actualValue;
 
     public LightData(){}
 
-    public LightData(LocalDateTime measureDate, boolean isOn, int threshold) {
+    public LightData(LocalDateTime measureDate, boolean isOn, int threshold, int actualValue) {
         super();
         this.measureDate = measureDate;
         this.isOn = isOn;
         this.threshold = threshold;
+        this.actualValue = actualValue;
     }
 
     /*public LightData(LocalDateTime measureDate, boolean isOn, int threshold) {
@@ -88,17 +90,26 @@ public class LightData {
         this.threshold = threshold;
     }
 
+    public int getActualValue() {
+        return actualValue;
+    }
+
+    public void setActualValue(int actualValue) {
+        this.actualValue = actualValue;
+    }
+
     @Override
     public String toString() {
-        return String.format("[ %d, %s, %b, %d ]", id, measureDate, isOn, threshold);
+        return String.format("[ %d, %s, %b, %d, %d ]", id, measureDate, isOn, threshold, actualValue);
     }
 
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
-        obj.put("mIeasure_date", measureDate);
+        obj.put("measure_date", measureDate);
         obj.put("is_on", isOn);
         obj.put("threshold", threshold);
+        obj.put("actual_value", actualValue);
         // TODO write to file
         System.out.println(obj);
         return obj;
@@ -122,10 +133,7 @@ public class LightData {
             return false;
         LightData other = (LightData) obj;
         if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
+            return other.id == null;
+        } else return id.equals(other.id);
     }
 }

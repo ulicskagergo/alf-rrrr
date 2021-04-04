@@ -28,8 +28,8 @@ public class ServerDemoApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        LightData lightData1 = saveAndFlushLightData("2021-03-14 20:09", true, 33);
-        LightData lightData2 = saveAndFlushLightData("2021-03-15 17:19", false, 0);
+        LightData lightData1 = saveAndFlushLightData("2021-03-14 20:09", true, 33, 30);
+        LightData lightData2 = saveAndFlushLightData("2021-03-15 17:19", false, 0, 0);
         printLightDataBase(0, (int)serverRepository.count());
     }
 
@@ -37,13 +37,13 @@ public class ServerDemoApplication implements CommandLineRunner {
         return serverRepository.saveAndFlush(lightData);
     }
 
-    public LightData saveAndFlushLightData(LocalDateTime localDateTime, boolean isOn, Integer threshold) {
-        return serverRepository.saveAndFlush(new LightData(localDateTime, isOn, threshold));
+    public LightData saveAndFlushLightData(LocalDateTime localDateTime, boolean isOn, Integer threshold, Integer actualValue) {
+        return serverRepository.saveAndFlush(new LightData(localDateTime, isOn, threshold, actualValue));
     }
 
-    public LightData saveAndFlushLightData(String localDateTime, boolean isOn, Integer threshold) {
+    public LightData saveAndFlushLightData(String localDateTime, boolean isOn, Integer threshold, Integer actualValue) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        return serverRepository.saveAndFlush(new LightData(LocalDateTime.parse(localDateTime, dateTimeFormatter), isOn, threshold));
+        return serverRepository.saveAndFlush(new LightData(LocalDateTime.parse(localDateTime, dateTimeFormatter), isOn, threshold, actualValue));
     }
 
     public void printLightDataBase(int pageNum, int size) {
