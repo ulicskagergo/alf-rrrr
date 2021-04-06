@@ -33,16 +33,15 @@ public class ServerDemoApplication implements CommandLineRunner {
         LightData lightData2 = saveAndFlushLightData("2021-03-15 17:19", false, 0, 0);
         printLightDataBase(0, (int)serverRepository.count());
 
-        int BUFFER_LENGTH = 256;
         String stringToSend = null, stringReceived = null;
         System.out.println("Starting device test code example...");
         System.out.println("Type in a short string to send to the kernel module:");
         Scanner scanner = new Scanner(System.in);
-        stringToSend = scanner.toString();
+        stringToSend = scanner.nextLine();
         System.out.println("Writing message to the device [" + stringToSend + "].");
 
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("/dev/ldrchar"))) {
-            bufferedWriter.write(stringToSend);
+            bufferedWriter.write(stringToSend);     // overwrite everything
         } catch (IOException ioException) {
             System.err.println("Error while writing to file: " + ioException.getMessage());
         }
@@ -50,8 +49,8 @@ public class ServerDemoApplication implements CommandLineRunner {
         scanner.nextLine();
         System.out.println("Reading from the device...");
 
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("/dev/ldchar"), BUFFER_LENGTH)) {
-            stringReceived = bufferedReader.readLine();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("/dev/ldchar"))) {
+            stringReceived = bufferedReader.readLine(); // read everything
         } catch (IOException ioException) {
             System.err.println("Error while reading from file: " + ioException.getMessage());
         }
