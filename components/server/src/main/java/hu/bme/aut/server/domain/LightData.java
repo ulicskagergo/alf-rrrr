@@ -39,20 +39,6 @@ public class LightData {
         this.actualValue = actualValue;
     }
 
-    /*public LightData(LocalDateTime measureDate, boolean isOn, int threshold) {
-        super();
-        this.measureDate = measureDate;
-        this.isOn = isOn;
-        this.threshold = threshold;
-    }
-
-    public LightData(boolean isOn, int threshold) {
-        super();
-        this.measureDate = LocalDateTime.now();
-        this.isOn = isOn;
-        this.threshold = threshold;
-    }*/
-
     @PrePersist
     private void prePersist() {
         if (measureDate == null) measureDate = LocalDateTime.now();
@@ -74,11 +60,11 @@ public class LightData {
         this.measureDate = measureDate;
     }
 
-    public boolean isOn() {
+    public boolean getIsOn() {
         return isOn;
     }
 
-    public void setOn(boolean on) {
+    public void setIsOn(boolean on) {
         isOn = on;
     }
 
@@ -100,7 +86,8 @@ public class LightData {
 
     @Override
     public String toString() {
-        return String.format("[ %d, %s, %b, %d, %d ]", id, measureDate, isOn, threshold, actualValue);
+        return toJSON().toString();
+        //return String.format("[ %d, %s, %b, %d, %d ]", id, measureDate, isOn, threshold, actualValue);
     }
 
     public JSONObject toJSON() {

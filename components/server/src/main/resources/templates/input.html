@@ -1,0 +1,24 @@
+<!--Input data-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+	<title>Input</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<form action="#" th:action="@{/}" th:object="${lightData}" method="post">
+		<p>
+			Threshold: <label>
+			<input type="text" th:field="*{threshold}" />
+		</label>
+		</p>
+		<p>
+			Switch: <label>
+			<input type="checkbox" th:field="*{isOn}" />
+		</label>
+		</p>
+		<input type="submit" value="Set" />
+	</form>
+</body>
+</html>

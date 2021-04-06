@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.io.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 @SpringBootApplication
@@ -42,7 +41,7 @@ public class ServerDemoApplication implements CommandLineRunner {
             System.out.println("Type in a short string to send to the kernel module:");
             dataReceived = readFromDevice(bufferedReader);
             lightData.setActualValue((dataReceived != -1) ? dataReceived : 0);
-            lightData.setOn(dataReceived != -1);
+            lightData.setIsOn(dataReceived != -1);
 
             // set threshold
             dataToSend = scanner.nextInt();
