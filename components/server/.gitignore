@@ -1,3 +1,5 @@
 .idea
-target
-*.imlo
+target/
+server-springboot.iml
+ServerDemoApplication.run.xml
+tmp.txt
