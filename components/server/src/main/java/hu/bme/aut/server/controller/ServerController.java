@@ -6,23 +6,43 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+//@Controller
+@RestController
 public class ServerController {
 
     @Autowired
     private ServerRepository serverRepository;
+
+    @RequestMapping(value = "/data")
+    public ResponseEntity<List<LightData>> getAllData() {
+        return new ResponseEntity<List<LightData>>(serverRepository.findAll(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/data/{id}")
+    public ResponseEntity<LightData> getDataById(@PathVariable("id") int id) {
+        if(id <= (int)serverRepository.count()) {
+            LightData lightData = new LightData();
+            lightData.setThreshold(11);
+            lightData.setActualValue(22);
+            lightData.setIsOn(true);
+            return new ResponseEntity<LightData>(lightData, HttpStatus.OK);
+        }
+        return new ResponseEntity<LightData>(HttpStatus.NOT_FOUND);
+    }
 
     @GetMapping("/")
     public String createLightData(Model model) {
