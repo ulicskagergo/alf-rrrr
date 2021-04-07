@@ -8,3 +8,11 @@ The values measured are nanoseconds, but the kernel module outputs microseconds.
 
 ## Lights
 We use a few LED strips and a 12V adapter, combined with an n-channel MOSFET, which is connected to the GPIO output pin used to turn the lights on and off.
+
+## Pins used
+// light gpio
+static unsigned int gpioLights = 6;
+
+// sensor gpio
+static unsigned int gpioSensor = 26;
+[pinout here](https://i2.wp.com/www.etechnophiles.com/wp-content/uploads/2021/01/R-Pi-4-GPIO-Pinout-1.jpg?resize=800%2C596&ssl=1)
