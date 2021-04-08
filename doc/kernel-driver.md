@@ -17,6 +17,7 @@ The kernel module is meant to be used on a raspberry pi (although it would proba
 2. `make` 
 3. There is a simple C program beside the module source, with which the module can be easily tested. Compile this test program (something like `gcc test_ldr.c -o ldr_test`)
 4. Load the module: `sudo insmod light_module.ko` (Other useful commands: `lsmod`, `modinfo light_module.ko`, `sudo rmmod light_module.ko`)
+    *You might want to give additional group rights with chmod to /dev/ldrchar, e.g. something like `chmod 777 /dev/ldrchar`*
 5. If you want to test it, run the test program and check out the log with `tail -n 50 -f kern.log` afterwards
 
 ## More info
