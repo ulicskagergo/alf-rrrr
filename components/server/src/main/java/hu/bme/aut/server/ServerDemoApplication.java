@@ -29,30 +29,33 @@ public class ServerDemoApplication implements CommandLineRunner {
         int dataToSend, dataReceived;
         System.out.println("Starting device test code example...");
         Scanner scanner = new Scanner(System.in);
-        /*BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("/dev/ldrchar"));
-        BufferedReader bufferedReader = new BufferedReader(new FileReader("/dev/ldchar"));*/
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("tmp.txt"));
-        BufferedReader bufferedReader = new BufferedReader(new FileReader("tmp.txt"));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("/dev/ldrrchar"));
+        BufferedReader bufferedReader = new BufferedReader(new FileReader("/dev/ldrchar"));
+        /*BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("tmp.txt"));
+        BufferedReader bufferedReader = new BufferedReader(new FileReader("tmp.txt"));*/
 
         while (true) {
-            LightData lightData = new LightData();
-
-            // read actual value
             System.out.println("Type in a short string to send to the kernel module:");
-            dataReceived = readFromDevice(bufferedReader);
-            lightData.setActualValue((dataReceived != -1) ? dataReceived : 0);
-            lightData.setIsOn(dataReceived != -1);
-
-            // set threshold
             dataToSend = scanner.nextInt();
+
             if (dataToSend == -1) {
                 break;
-            }
-            writeToDevice(bufferedWriter, dataToSend);
-            lightData.setThreshold(dataToSend);
+            } else if (dataToSend == 0 || dataToSend == 1) {
 
-            lightData.setMeasureDate(LocalDateTime.now());
-            lightData = saveAndFlushLightData(lightData);
+                LightData lightData = new LightData();
+                lightData.setThreshold(333);        // tmp threshold
+
+                // read actual value
+                dataReceived = readFromDevice(bufferedReader);
+                lightData.setActualValue((dataReceived != -1) ? dataReceived : 0);
+
+                // turn on/off
+                writeToDevice(bufferedWriter, dataToSend);
+                lightData.setIsOn(dataToSend == 1);
+
+                lightData.setMeasureDate(LocalDateTime.now());
+                lightData = saveAndFlushLightData(lightData);
+            }
 
             printLightDataBase(0, (int)serverRepository.count());
         }
@@ -63,7 +66,7 @@ public class ServerDemoApplication implements CommandLineRunner {
 
     private void writeToDevice(BufferedWriter bufferedWriter, Integer dataToSend) {
         try {
-            bufferedWriter.write(dataToSend);
+            bufferedWriter.write(dataToSend + 48);
             bufferedWriter.flush();
         } catch (IOException ioException) {
             System.err.println("Error while writing to file: " + ioException.getMessage());
@@ -73,7 +76,8 @@ public class ServerDemoApplication implements CommandLineRunner {
     private Integer readFromDevice(BufferedReader bufferedReader) {
         Integer dataReceived = null;
         try {
-            dataReceived = bufferedReader.read();
+            dataReceived = bufferedReader.read() - 48;
+            System.out.println("[ DEBUG ] dataReceived: " + dataReceived);
         } catch (IOException ioException) {
             System.err.println("Error while reading from file: " + ioException.getMessage());
         }

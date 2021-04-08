@@ -97,8 +97,6 @@ public class LightData {
         obj.put("is_on", isOn);
         obj.put("threshold", threshold);
         obj.put("actual_value", actualValue);
-        // TODO write to file
-        System.out.println(obj);
         return obj;
     }
 
