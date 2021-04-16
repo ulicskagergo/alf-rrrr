@@ -195,20 +195,20 @@ static int dev_open(struct inode *inodep, struct file *filep){
    return 0;
 }
 
-// Gives back sensor value, if read
 static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *offset){
     int error_count = 0;
 
     long value = sensor_current_value();
     printk(KERN_INFO "ldrChar: Sensor value: %ld\n", value);
 
-    char message[10];
-    snprintf(message, 10, "%ld", value);
-    size_t size_of_message = strlen(message);
-
+    size_t size_of_message = snprintf(NULL, 0, "%ld\n", value);
+    char message[size_of_message];
+    snprintf(message, size_of_message+1, "%ld\n", value);
+    printk(KERN_INFO "ldrChar: Sensor value message: %s\n", message);
+    
     if(len>=size_of_message) {
         error_count = copy_to_user(buffer, message, size_of_message);
-    	if (error_count==0){            // if true then have success
+        if (error_count==0){            // if true then have success
             printk(KERN_INFO "EBBChar: Sent %d characters to the user\n", size_of_message);
             return size_of_message;  // clear the position to the start and return 0
         }
