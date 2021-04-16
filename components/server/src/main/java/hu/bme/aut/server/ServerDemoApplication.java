@@ -29,7 +29,7 @@ public class ServerDemoApplication implements CommandLineRunner {
         int dataToSend, dataReceived;
         System.out.println("Starting device test code example...");
         Scanner scanner = new Scanner(System.in);
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("/dev/ldrrchar"));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("/dev/ldrchar"));
         BufferedReader bufferedReader = new BufferedReader(new FileReader("/dev/ldrchar"));
         /*BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("tmp.txt"));
         BufferedReader bufferedReader = new BufferedReader(new FileReader("tmp.txt"));*/
@@ -74,10 +74,11 @@ public class ServerDemoApplication implements CommandLineRunner {
     }
 
     private Integer readFromDevice(BufferedReader bufferedReader) {
-        Integer dataReceived = null;
+        Integer dataReceived = 0;
         try {
-            //dataReceived = bufferedReader.read() - 48;
-            dataReceived = bufferedReader.read(new char[16]);
+            String stringReceived = bufferedReader.readLine();
+            System.out.println("[ DEBUG ] stringReceived: " + stringReceived);
+            dataReceived = Integer.parseInt(stringReceived);
             System.out.println("[ DEBUG ] dataReceived: " + dataReceived);
         } catch (IOException ioException) {
             System.err.println("Error while reading from file: " + ioException.getMessage());
