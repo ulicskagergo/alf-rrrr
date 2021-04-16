@@ -204,18 +204,18 @@ static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *of
 
     char message[10];
     snprintf(message, 10, "%ld", value);
-    int size_of_message = sizeof(message);
+    size_t size_of_message = sizeof(message);
 
-    error_count = copy_to_user(buffer, message, size_of_message);
-
-    if (error_count==0){            // if true then have success
-        printk(KERN_INFO "EBBChar: Sent %d characters to the user\n", size_of_message);
-        return (size_of_message=0);  // clear the position to the start and return 0
+    if(len>=size_of_message) {
+        error_count = copy_to_user(buffer, message, size_of_message);
+    	if (error_count==0){            // if true then have success
+            printk(KERN_INFO "EBBChar: Sent %d characters to the user\n", size_of_message);
+            return size_of_message;  // clear the position to the start and return 0
+        }
     }
-    else {
-        printk(KERN_INFO "EBBChar: Failed to send %d characters to the user\n", error_count);
-        return -EFAULT;              // Failed -- return a bad address message (i.e. -14)
-    }
+	
+    printk(KERN_INFO "EBBChar: Failed to send %d characters to the user\n", error_count);
+    return -EFAULT;              // Failed -- return a bad address message (i.e. -14)
 }
 
 // Receives a command to turn the light off (0) or on (1)
