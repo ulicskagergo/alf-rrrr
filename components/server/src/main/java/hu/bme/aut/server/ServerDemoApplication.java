@@ -76,7 +76,8 @@ public class ServerDemoApplication implements CommandLineRunner {
     private Integer readFromDevice(BufferedReader bufferedReader) {
         Integer dataReceived = null;
         try {
-            dataReceived = bufferedReader.read() - 48;
+            //dataReceived = bufferedReader.read() - 48;
+            dataReceived = bufferedReader.read(new char[16]);
             System.out.println("[ DEBUG ] dataReceived: " + dataReceived);
         } catch (IOException ioException) {
             System.err.println("Error while reading from file: " + ioException.getMessage());
