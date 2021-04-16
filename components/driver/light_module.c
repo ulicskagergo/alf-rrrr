@@ -204,7 +204,7 @@ static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *of
 
     char message[10];
     snprintf(message, 10, "%ld", value);
-    size_t size_of_message = sizeof(message);
+    size_t size_of_message = strlen(message);
 
     if(len>=size_of_message) {
         error_count = copy_to_user(buffer, message, size_of_message);
