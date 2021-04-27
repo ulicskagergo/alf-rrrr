@@ -20,19 +20,20 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-//@Controller
-@RestController
+@Controller
 public class ServerController {
 
     @Autowired
     private ServerRepository serverRepository;
 
     @RequestMapping(value = "/data")
+    @ResponseBody
     public ResponseEntity<List<LightData>> getAllData() {
         return new ResponseEntity<List<LightData>>(serverRepository.findAll(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/data/{id}")
+    @ResponseBody
     public ResponseEntity<LightData> getDataById(@PathVariable("id") int id) {
         if(id <= (int)serverRepository.count()) {
             LightData lightData = new LightData();
@@ -44,10 +45,10 @@ public class ServerController {
         return new ResponseEntity<LightData>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/")
+    @RequestMapping("/")
     public String createLightData(Model model) {
         model.addAttribute("lightData", new LightData());
-        return "input";
+        return "input.html";
     }
 
     @PostMapping("/")

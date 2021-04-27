@@ -17,6 +17,8 @@ import java.util.Scanner;
 @SpringBootApplication
 public class ServerDemoApplication implements CommandLineRunner {
 
+    private final boolean RASPI_MODE = true;
+
     @Autowired
     ServerRepository serverRepository;
 
@@ -27,15 +29,18 @@ public class ServerDemoApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         int dataToSend, dataReceived;
-        System.out.println("Starting device test code example...");
         Scanner scanner = new Scanner(System.in);
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("/dev/ldrchar"));
-        BufferedReader bufferedReader = new BufferedReader(new FileReader("/dev/ldrchar"));
-        /*BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("tmp.txt"));
-        BufferedReader bufferedReader = new BufferedReader(new FileReader("tmp.txt"));*/
+        BufferedWriter bufferedWriter;
+        BufferedReader bufferedReader;
+        if (RASPI_MODE) {
+            bufferedWriter = new BufferedWriter(new FileWriter("/dev/ldrchar"));
+            bufferedReader = new BufferedReader(new FileReader("/dev/ldrchar"));
+        } else {
+            bufferedWriter = new BufferedWriter(new FileWriter("tmp.txt"));
+            bufferedReader = new BufferedReader(new FileReader("tmp.txt"));
+        }
 
         while (true) {
-            System.out.println("Type in a short string to send to the kernel module:");
             dataToSend = scanner.nextInt();
 
             if (dataToSend == -1) {
@@ -61,7 +66,6 @@ public class ServerDemoApplication implements CommandLineRunner {
         }
         bufferedReader.close();
         bufferedWriter.close();
-        System.out.println("End of the program");
     }
 
     private void writeToDevice(BufferedWriter bufferedWriter, Integer dataToSend) {
@@ -69,19 +73,27 @@ public class ServerDemoApplication implements CommandLineRunner {
             bufferedWriter.write(dataToSend + 48);
             bufferedWriter.flush();
         } catch (IOException ioException) {
-            System.err.println("Error while writing to file: " + ioException.getMessage());
+            System.err.println("[ ERROR ] Cannot write to file: " + ioException.getMessage());
         }
     }
 
     private Integer readFromDevice(BufferedReader bufferedReader) {
-        Integer dataReceived = 0;
+        int dataReceived = 0;
         try {
-            String stringReceived = bufferedReader.readLine();
-            System.out.println("[ DEBUG ] stringReceived: " + stringReceived);
-            dataReceived = Integer.parseInt(stringReceived);
-            System.out.println("[ DEBUG ] dataReceived: " + dataReceived);
+            if (RASPI_MODE) {
+                String stringReceived = bufferedReader.readLine();
+                System.out.println("[ DEBUG ] stringReceived: " + stringReceived);
+                dataReceived = Integer.parseInt(stringReceived);
+                System.out.println("[ DEBUG ] dataReceived: " + dataReceived);
+            } else {
+                String stringReceived = bufferedReader.readLine();
+                if (stringReceived != null) {
+                    dataReceived = Integer.parseInt(stringReceived.trim());
+                    System.out.println("[ DEBUG ] dataReceived: " + dataReceived);
+                }
+            }
         } catch (IOException ioException) {
-            System.err.println("Error while reading from file: " + ioException.getMessage());
+            System.err.println("[ ERROR ] Cannot read from file: " + ioException.getMessage());
         }
         return dataReceived;
     }
@@ -94,10 +106,7 @@ public class ServerDemoApplication implements CommandLineRunner {
         Pageable pageable = PageRequest.of(pageNum, size);
         Page<LightData> page = serverRepository.findAll(pageable);
         page.forEach(System.out::println);
-        //page.forEach(LightData::toJSON);
     }
-
-    // TODO print with sort and direction
 
     // TODO all CRUD
 }

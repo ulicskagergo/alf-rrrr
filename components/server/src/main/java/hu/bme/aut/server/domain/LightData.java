@@ -4,13 +4,12 @@ import org.hibernate.annotations.GenericGenerator;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "LightData")
 public class LightData {
-
-    //TODO add validations
 
     @Id
     @Column(name = "id")
@@ -18,15 +17,22 @@ public class LightData {
     private Integer id = 0;
 
     @Column(name = "measure_date")
+    @Past
     private LocalDateTime measureDate;
 
     @Column(name = "is_on")
+    @NotNull
     private boolean isOn;
 
+    // TODO minmax validation
     @Column(name = "threshold")
+    @Min(0)
+    @Max(999)
     private int threshold;
 
     @Column(name = "actual_value")
+    @Min(0)
+    @Max(999)
     private int actualValue;
 
     public LightData(){}
@@ -86,7 +92,7 @@ public class LightData {
 
     @Override
     public String toString() {
-        return toJSON().toString();
+        return "[ DEBUG ]" + toJSON().toString();
         //return String.format("[ %d, %s, %b, %d, %d ]", id, measureDate, isOn, threshold, actualValue);
     }
 
