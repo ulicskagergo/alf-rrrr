@@ -27,3 +27,10 @@ Optional: if you want to package the project:
 ```bash
 mvn package
 ```
+
+When started you can access the server on localhost:8080/data/{id}.
+
+To test POST with ```curl```:
+```bash
+ curl -X POST http://localhost:8080/data -H 'cache-control: no-cache' -H 'content-type: application/json' -d '{ "threshold":<0-999>, "isOn":<true/false> }'
+```

@@ -35,7 +35,9 @@ public class LightData {
     @Max(999)
     private int actualValue;
 
-    public LightData(){}
+    public LightData(){
+        prePersist();
+    }
 
     public LightData(LocalDateTime measureDate, boolean isOn, int threshold, int actualValue) {
         super();

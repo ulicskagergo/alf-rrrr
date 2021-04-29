@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@RestController
 public class ServerController {
 
     @Autowired
@@ -45,7 +45,16 @@ public class ServerController {
         return new ResponseEntity<LightData>(HttpStatus.NOT_FOUND);
     }
 
-    @RequestMapping("/")
+    @RequestMapping(value = "/data", method = RequestMethod.POST)
+    public LightData saveData(@RequestBody @Valid LightData lightData, Model model) {
+        serverRepository.saveAndFlush(lightData);
+        Pageable pageable = PageRequest.of(0, (int)serverRepository.count());
+        Page<LightData> page = serverRepository.findAll(pageable);
+        model.addAttribute("lightData", page.getContent());
+        return lightData;
+    }
+
+    /*@RequestMapping("/")
     public String createLightData(Model model) {
         model.addAttribute("lightData", new LightData());
         return "input.html";
@@ -74,5 +83,5 @@ public class ServerController {
         Page<LightData> page = serverRepository.findAll(pageable);
         model.addAttribute("lightData", page.getContent());
         return "output";
-    }
+    }*/
 }

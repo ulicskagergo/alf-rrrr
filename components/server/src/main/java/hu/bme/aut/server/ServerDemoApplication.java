@@ -17,7 +17,7 @@ import java.util.Scanner;
 @SpringBootApplication
 public class ServerDemoApplication implements CommandLineRunner {
 
-    private final boolean RASPI_MODE = true;
+    private final boolean RASPI_MODE = false;
 
     @Autowired
     ServerRepository serverRepository;
