@@ -10,6 +10,10 @@ ApplicationWindow {
         source: "bg-plants.jpg"
     }
 
+    Component.onCompleted: {
+        pageLoader.source = "SettingsScreen.qml"
+    }
+
     id: main
     width: 1280
     height: 720

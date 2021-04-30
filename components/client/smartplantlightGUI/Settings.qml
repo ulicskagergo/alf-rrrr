@@ -24,41 +24,35 @@ Item {
             spacing: 10
 
             ColumnLayout {
-                /*
-                Rectangle { // background color
-                    width: parent.width
-                    height: parent.height
-                    color: "white"
-                }
-                */
                 Text{
                     font.bold: true
                     text: "System should be turned on between:"
                 }
 
-                RowLayout {
-                    TextInput {
-                        id: fromtoText
-                        inputMask: "99:99 - 99:99"//input mask
-                        text: "07:00 - 19:00" //default text
-                        inputMethodHints: Qt.ImhDigitsOnly
-                        validator: RegExpValidator { regExp: /^([0-1\s]?[0-9\s]|2[0-3\s]):([0-5\s][0-9\s]):([0-5\s][0-9\s])$ / }
+                TextInput {
+                    id: fromtoText
+                    inputMask: "99:99 - 99:99"// input mask
+                    text: "07:00 - 19:00" // default text
+                    inputMethodHints: Qt.ImhDigitsOnly
+                    validator: RegExpValidator { regExp: /^([0-1\s]?[0-9\s]|2[0-3\s]):([0-5\s][0-9\s]) - ([0-1\s]?[0-9\s]|2[0-3\s]):([0-5\s][0-9\s])$ / }
+                    onFocusChanged: {
+                        if(focus===true) {
+                            cursorPosition = 0;
+                        }
                     }
+                }
 
-
+                Text {
+                    id: errorMsg
+                    font.italic: true
+                    color: "darkgrey"
+                    text: "Invalid input: time of system turning on must be earlier than time of turning off"
+                    visible: false
                 }
 
             }
 
             ColumnLayout {
-                /*
-                Rectangle { // background color
-                    width: parent.width
-                    height: parent.height
-                    color: "white"
-                }
-                */
-
                 Text {
                     font.bold: true
                     text: "Light sensitivity\n(0% - light always on, 100% - light always off):"
@@ -77,6 +71,9 @@ Item {
                     }
                 }
             }
+            Component.onCompleted: {
+                RESTClient.pullSettings();
+            }
         }
     }
 
@@ -94,9 +91,19 @@ Item {
         }
 
         onClicked: {
-            console.log("Save button pushed")
-            RESTClient.pushSettings(lightSlider.value, fromtoText.text)
-            // main.restApiCommunication.saveLightSettings(parseInt(daytimeText.text), lightSlider.value)
+            errorMsg.visible = false;
+            console.log("Save button pushed");
+            // validate that from is earlier than to
+            var fromHour = parseInt(fromtoText.text.split(" ")[0].split(":")[0]);
+            var toHour = parseInt(fromtoText.text.split(" ")[2].split(":")[0]);
+            var fromMin = parseInt(fromtoText.text.split(" ")[0].split(":")[1]);
+            var toMin = parseInt(fromtoText.text.split(" ")[2].split(":")[1]);
+            if((fromHour < toHour) || ( fromHour === toHour && fromMin < toMin )) {
+                RESTClient.pushSettings(lightSlider.value, fromtoText.text.split(" - ")[0], fromtoText.text.split(" - ")[1]);
+            } else {
+                   errorMsg.visible = true;
+            }
+
         }
     }
 }

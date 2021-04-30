@@ -39,7 +39,7 @@ Charts {
                     id: lightValueSeries
                     axisX: sensorAxisX
                     axisY: sensorAxisY
-                    name: "Light values"
+                    name: "sensor values (0-100%)"
                     color: "blue"
                     onPointAdded: {
                         console.log("point added");
@@ -76,7 +76,7 @@ Charts {
                     id: turnOnOffSeries
                     axisX: lightAxisX
                     axisY: lightAxisY
-                    name: "Light state"
+                    name: "turned on/off (1/0)"
                     color: "red"
                     pointLabelsVisible: false
                     pointsVisible: true
@@ -91,15 +91,14 @@ Charts {
         }
 
         Item {
+            width: listRectangle.width
+            height: listRectangle.height
             ListModel {
                 id: listmodel
-                ListElement {
-                    date: "2021. 03. 04"
-                }
-
             }
 
             Rectangle {
+                id: listRectangle
                 width: main.width/3
                 height: (main.height-main.header.height)*0.9
                 color: "transparent"
@@ -128,7 +127,7 @@ Charts {
                             MouseArea {
                                 anchors.fill: parent
                                 onClicked: {
-                                    list.currentIndex = index
+                                    list.currentIndex = index;
                                     lightchart.dateChanged(index);
                                 }
                             }
