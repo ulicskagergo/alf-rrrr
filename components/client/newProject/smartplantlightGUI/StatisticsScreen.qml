@@ -16,19 +16,21 @@ Charts {
                 id: sensorchart
                 height: parent.height*0.5
                 width: parent.width
-                backgroundColor: "lightgrey"
+                backgroundColor: "#ddf2e3"
                 title: "Sensor values"
                 antialiasing: true
                 visible: true
 
                 ValueAxis {
                     id: sensorAxisY
+                    color: "black"
                     min: 0
                     max: 100
                 }
 
                 ValueAxis {
                     id: sensorAxisX
+                    color: "black"
                     min: 0
                     max: 24
                 }
@@ -51,19 +53,21 @@ Charts {
                 id: lightchart
                 height: parent.height*0.5
                 width: parent.width
-                backgroundColor: "lightgrey"
+                backgroundColor: "#ddf2e3"
                 title: "Light state"
                 antialiasing: true
                 visible: true
 
                 ValueAxis {
                     id: lightAxisY
+                    color: "black"
                     min: 0
                     max: 1
                 }
 
                 ValueAxis {
                     id: lightAxisX
+                    color: "black"
                     min: 0
                     max: 24
                 }
@@ -77,74 +81,71 @@ Charts {
                     pointLabelsVisible: false
                     pointsVisible: true
                 }
-                Component.onCompleted: {
-                    RESTClient.getPoints()
+                // custom signal, coming from the listview, when the active day is changed
+                signal dateChanged(int index)
+                onDateChanged: {
+                    RESTClient.getPoints(index);
                 }
-
             }
 
         }
 
         Item {
-            width: main.width/3
-            height: main.height-main.header.height
             ListModel {
                 id: listmodel
                 ListElement {
-                    name: "Bill Smith"
-                    number: "555 3264"
+                    date: "2021. 03. 04"
                 }
-                ListElement {
-                    name: "John Brown"
-                    number: "555 8426"
-                }
-                ListElement {
-                    name: "Sam Wise"
-                    number: "555 0473"
-                }
+
             }
 
             Rectangle {
-                width: 180; height: 200
-
-                Component {
-                    id: contactDelegate
-                    Item {
-                        width: 180; height: 40
-                        Column {
-                            Text { text: '<b>Name:</b> ' + name }
-                            Text { text: '<b>Number:</b> ' + number }
-                        }
-                    }
-                }
+                width: main.width/3
+                height: (main.height-main.header.height)*0.9
+                color: "transparent"
 
                 ListView {
-                    width: 180; height: 200
+                    id: list
+                    width: parent.width; height: parent.height
+                    header: Text {
+                        text: "Choose a day:"
+                    }
 
                     Component {
                         id: contactsDelegate
                         Rectangle {
                             id: wrapper
-                            width: 180
-                            height: contactInfo.height
-                            color: ListView.isCurrentItem ? "black" : "red"
+                            width: parent.width
+                            height: 60
+                            color: ListView.isCurrentItem ? "#ddf2e3" : "lightgrey"
                             Text {
-                                id: contactInfo
-                                text: name + ": " + number
-                                color: wrapper.ListView.isCurrentItem ? "red" : "black"
+                                text: date
+                                color: wrapper.ListView.isCurrentItem ? "black" : "white"
+                                verticalAlignment: Text.AlignVCenter
+                                height: parent.height
+                                padding: 20
+                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    list.currentIndex = index
+                                    lightchart.dateChanged(index);
+                                }
                             }
                         }
                     }
 
                     model: listmodel
                     delegate: contactsDelegate
-                    focus: true
+
+                    Component.onCompleted: {
+                        RESTClient.getDates();
+                        RESTClient.getPoints(0);
+                    }
                 }
             }
 
         }
 
-
-    // TODO ListView
     }
 }

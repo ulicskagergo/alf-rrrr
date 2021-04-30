@@ -2,16 +2,24 @@ import QtQuick 2.15
 import QtQuick.Controls 2.5
 import QtQuick.Window 2.12
 import QtQuick.Layouts 1.3
+import QtQuick.Controls.Material 2.4
 
 ApplicationWindow {
-    background: bgPlants
     Image {
         id: bgPlants
         source: "bg-plants.jpg"
     }
+
     id: main
     width: 1280
     height: 720
+
+    maximumHeight: height
+    maximumWidth: width
+
+    minimumHeight: height
+    minimumWidth: width
+
     visible: true
     title: qsTr("Smart Plant Light")
 

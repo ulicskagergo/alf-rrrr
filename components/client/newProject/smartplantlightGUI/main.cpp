@@ -33,7 +33,6 @@
 #include <QtCharts/QLineSeries>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include <RestApiCommunication.h>
 #include <QQuickWindow>
 
 QT_CHARTS_USE_NAMESPACE
@@ -43,9 +42,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    RestApiCommunication* restApiCommunication = new RestApiCommunication(QStringLiteral("exampleURL"));
 
-    engine.rootContext()->setContextProperty("restApiCommunication", restApiCommunication);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     QObject::connect(&engine, &QQmlApplicationEngine::quit, &QGuiApplication::quit);

@@ -2,55 +2,65 @@ import QtQuick 2.0
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.3
 
+import 'RESTCalls.js' as RESTClient
+
 Item {
     anchors.fill: parent
 
     objectName: "Settings"
 
-    signal thresholdChanged(msg: int)
-    signal daytimeChanged(msg: int)
+    Rectangle { // background color
+        id: rectangle
+        width: lightSettings.width+50
+        height: lightSettings.height+50
+        border.color: "#ddf2e3"
+        border.width: 8
+        color: "white"
 
-    property int selectedThreshold: 0
+        ColumnLayout {
+            id: lightSettings
+            width: parent.fill
+            anchors.centerIn: rectangle
+            spacing: 10
 
-    function selectThreshold(th){
-        selectedThreshold=th;
-        console.log("selectedthreshold called")
-
-        thresholdChanged(th);
-    }
-
-    function changeDaytime(dt){
-        console.log("changedaytime called")
-        daytimeChanged(dt)
-
-    }
-
-    RowLayout {
-        id: lightSettings
-        width: parent.fill
-        spacing: 10
-
-        GroupBox {
-            // width: parent/3
-            ColumnLayout{
-
+            ColumnLayout {
+                /*
+                Rectangle { // background color
+                    width: parent.width
+                    height: parent.height
+                    color: "white"
+                }
+                */
                 Text{
-                    text: "Amount of light per day:"
+                    font.bold: true
+                    text: "System should be turned on between:"
                 }
 
-                TextField {
-                    id: daytimeText
-                    validator: IntValidator {bottom: 0; top: 14;}
-                    placeholderText: "Enter value in hours"
+                RowLayout {
+                    TextInput {
+                        id: fromtoText
+                        inputMask: "99:99 - 99:99"//input mask
+                        text: "07:00 - 19:00" //default text
+                        inputMethodHints: Qt.ImhDigitsOnly
+                        validator: RegExpValidator { regExp: /^([0-1\s]?[0-9\s]|2[0-3\s]):([0-5\s][0-9\s]):([0-5\s][0-9\s])$ / }
+                    }
+
+
                 }
 
             }
-        }
 
-        GroupBox {
-            // width: parent/3
             ColumnLayout {
+                /*
+                Rectangle { // background color
+                    width: parent.width
+                    height: parent.height
+                    color: "white"
+                }
+                */
+
                 Text {
+                    font.bold: true
                     text: "Light sensitivity\n(0% - light always on, 100% - light always off):"
                 }
                 RowLayout {
@@ -68,19 +78,25 @@ Item {
                 }
             }
         }
-
     }
 
     Button {
         id: saveButton
-        anchors.top: lightSettings.bottom
+        anchors.top: rectangle.bottom
         anchors.topMargin: 10
         anchors.bottomMargin: 10
         text: "Save"
+
+        Rectangle { // background color
+            width: parent.width
+            height: parent.height
+            color: "#ddf2e3"
+        }
+
         onClicked: {
             console.log("Save button pushed")
+            RESTClient.pushSettings(lightSlider.value, fromtoText.text)
             // main.restApiCommunication.saveLightSettings(parseInt(daytimeText.text), lightSlider.value)
         }
     }
-
 }

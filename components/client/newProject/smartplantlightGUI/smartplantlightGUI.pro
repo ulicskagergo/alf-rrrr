@@ -3,14 +3,12 @@ QT += qml
 QT += quick
 
 SOURCES += \
-    RestApiCommunication.cpp \
     main.cpp
 
 target.path = .
 INSTALLS += target
 
-HEADERS += \
-    RestApiCommunication.h
+HEADERS +=
 
 DISTFILES += \
     Charts.qml \
