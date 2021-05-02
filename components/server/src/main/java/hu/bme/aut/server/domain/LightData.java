@@ -30,6 +30,7 @@ public class LightData {
     @Max(999)
     private int threshold;
 
+    // 50-3000 - 0-100 map és 50 alatt 0, 3000 felett 100
     @Column(name = "actual_value")
     @Min(0)
     @Max(999)
@@ -101,10 +102,10 @@ public class LightData {
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
-        obj.put("measure_date", measureDate);
+        obj.put("measure_date", measureDate);   //
         obj.put("is_on", isOn);
-        obj.put("threshold", threshold);
-        obj.put("actual_value", actualValue);
+        obj.put("threshold", threshold);        // %, sensitivity
+        obj.put("actual_value", actualValue);   // %
         return obj;
     }
 
