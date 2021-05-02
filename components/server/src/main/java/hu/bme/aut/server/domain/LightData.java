@@ -1,5 +1,6 @@
 package hu.bme.aut.server.domain;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.json.simple.JSONObject;
 

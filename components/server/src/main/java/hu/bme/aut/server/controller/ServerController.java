@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,8 +42,12 @@ public class ServerController {
     // POST { "sensitivity": <0-100> sensorSensitivity, "from": "15:00", "to":"19:00" } /settings
     @RequestMapping(value = "/settings", method = RequestMethod.POST)
     public void setThreshold(@RequestBody @Valid LightModel lightModel) {
-        System.out.println(LightModel.getInstance());
-        lightModel.start();
+        LightModel.getInstance().setSensitivity(lightModel.getSensitivity());
+        LightModel.getInstance().setFrom(lightModel.getFrom());
+        LightModel.getInstance().setTo(lightModel.getTo());
+        System.out.println(lightModel.getSensitivity() + " " + lightModel.getFrom() + " " + lightModel.getTo());
+        System.out.println(LightModel.getInstance().getSensitivity() + " " + LightModel.getInstance().getFrom() + " " + LightModel.getInstance().getTo());
+        //lightModel.start();
         //LightModel.getInstance().start();
     }
 
@@ -55,7 +60,7 @@ public class ServerController {
 
     // GET days /dates
     @RequestMapping(value = "/dates")
-    public ResponseEntity<List<Integer>> getDays() {
+    public ResponseEntity<List<Object>> getDays() {
         return new ResponseEntity<>(serverRepository.findMeasurementDates(), HttpStatus.OK);
     }
 
