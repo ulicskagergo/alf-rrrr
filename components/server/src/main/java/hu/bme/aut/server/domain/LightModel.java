@@ -1,6 +1,7 @@
 package hu.bme.aut.server.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import hu.bme.aut.server.domain.database.LightData;
 import hu.bme.aut.server.domain.restapi.LightSettingsBody;
 
 import java.io.*;
@@ -100,16 +101,15 @@ public final class LightModel {
             measureWriteTimer.cancel();
         }
 
-        TimerTask measureAndSetLights = new TimerTask() {
+        TimerTask periodicMeasurement = new TimerTask() {
             @Override
             public void run() {
-                int measurement = takeMeasurement();
-                adjustLights(measurement); // turn lights on or off, based on measurement
+                measureAndSetLights();
             }
         };
 
         measureWriteTimer = new Timer();
-        measureWriteTimer.schedule(measureAndSetLights, 0, measurementPeriod);
+        measureWriteTimer.schedule(periodicMeasurement, 0, measurementPeriod);
     }
 
     private void turnSystemOff() {
@@ -119,8 +119,18 @@ public final class LightModel {
         switchLights(false);
     }
 
+    // takes a measurement, adjusts lights based on that and records measurement in the DB
+    private void measureAndSetLights() {
+        LightData record = new LightData();
+        record.setMeasureDate(LocalDateTime.now());
+        int measurement = takeMeasurement();
+        record.setIsOn(adjustLights(measurement)); // turn lights on or off, based on measurement
+        record.setActualValue(measurement);
+        record.setThreshold(percentageToMicrosec(sensitivity)); // we only record data into the DB in microsec, never in %
+        record = saveAndFlushLightData(record);
+    }
+
     private int takeMeasurement() {
-        // TODO write measurement into database as well
         int avg = 0;
         try {
             BufferedReader bufferedReader;
@@ -135,6 +145,7 @@ public final class LightModel {
             for(int i = 0; i < 50; i++) {
                 measurements[i] = readFromDevice(bufferedReader);
             }
+            bufferedReader.close();
 
             // https://miro.medium.com/max/8000/1*0MPDTLn8KoLApoFvI0P2vQ.png
             // filter outliers and get the avg of the rest
@@ -155,24 +166,13 @@ public final class LightModel {
 
             avg = (int) Math.round((double)avg / (double)validValueCount);
 
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return avg;
-            /*
-            LightData lightData = new LightData();
-            lightData.setThreshold(sensitivity);
-            lightData.setIsOn(true);
-            if (RASPI_MODE) {
-                lightData.setActualValue(readFromDevice(bufferedReader));
-            } else {
-                int dataReceived = readFromDevice(bufferedReader);
-                lightData.setActualValue((dataReceived != -1) ? dataReceived : 0);
-            }
-            */
     }
 
-    private void adjustLights(int measurement) {
+    private boolean adjustLights(int measurement) {
         boolean turnLightsOn = false;
         if(percentageToMicrosec(sensitivity) < measurement) {
             turnLightsOn = false;
@@ -180,6 +180,7 @@ public final class LightModel {
             turnLightsOn = true;
         }
         switchLights(turnLightsOn);
+        return turnLightsOn;
     }
 
     // turns lights on or off, based on the boolean
@@ -191,6 +192,26 @@ public final class LightModel {
         }
     }
 
+    private void writeToDevice(int msg) {
+        if(msg!=0 && msg!=1) {
+            throw new RuntimeException("Sending wrong message to kernel module (should be 0 or 1");
+        }
+
+        try {
+            BufferedWriter bufferedWriter;
+            if (RASPI_MODE) {
+                    bufferedWriter = new BufferedWriter(new FileWriter("/dev/ldrchar"));
+
+            } else {
+                bufferedWriter = new BufferedWriter(new FileWriter("tmp.txt"));
+            }
+            bufferedWriter.write(msg + 48); // we send an ASCII char here
+            bufferedWriter.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     ////////////////////
 

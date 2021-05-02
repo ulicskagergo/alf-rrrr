@@ -94,7 +94,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.6.0</version>
 				<configuration>
-					<mainClass>hu.bme.aut.server.ServerDemoApplication</mainClass>
+					<mainClass>hu.bme.aut.server.ServerApplication</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>

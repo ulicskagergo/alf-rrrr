@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Scanner;
 
 @SpringBootApplication
-public class ServerDemoApplication implements CommandLineRunner {
+public class ServerApplication implements CommandLineRunner {
 
     private final boolean RASPI_MODE = false;
 
@@ -23,7 +23,7 @@ public class ServerDemoApplication implements CommandLineRunner {
     ServerRepository serverRepository;
 
     public static void main(String[] args) {
-        SpringApplication.run(ServerDemoApplication.class, args);
+        SpringApplication.run(ServerApplication.class, args);
     }
 
     @Override
