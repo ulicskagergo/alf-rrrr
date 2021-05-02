@@ -213,34 +213,6 @@ public final class LightModel {
         }
     }
 
-    ////////////////////
-
-    /*
-    private void measure() {
-        // TODO more measurement at time
-        try {
-            BufferedReader bufferedReader;
-            if (RASPI_MODE) {
-                bufferedReader = new BufferedReader(new FileReader("/dev/ldrchar"));
-            } else {
-                bufferedReader = new BufferedReader(new FileReader("tmp.txt"));
-            }
-            LightData lightData = new LightData();
-            lightData.setThreshold(sensitivity);
-            lightData.setIsOn(true);
-            if (RASPI_MODE) {
-                lightData.setActualValue(readFromDevice(bufferedReader));
-            } else {
-                int dataReceived = readFromDevice(bufferedReader);
-                lightData.setActualValue((dataReceived != -1) ? dataReceived : 0);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-    */
-
-
     private Integer readFromDevice(BufferedReader bufferedReader) {
         int dataReceived = 0;
         try {
@@ -261,8 +233,6 @@ public final class LightModel {
         }
         return dataReceived;
     }
-
-    ////////////
 
     private static int percentageToMicrosec(int percentageValue) {
         // mapping 0-100% to 50-5000ms
