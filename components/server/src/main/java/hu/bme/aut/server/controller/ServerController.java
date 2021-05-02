@@ -1,7 +1,8 @@
 package hu.bme.aut.server.controller;
 
-import hu.bme.aut.server.domain.LightData;
+import hu.bme.aut.server.domain.database.LightData;
 import hu.bme.aut.server.domain.LightModel;
+import hu.bme.aut.server.domain.restapi.LightSettingsBody;
 import hu.bme.aut.server.repository.ServerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,13 +10,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -40,22 +42,22 @@ public class ServerController {
     }
 
     // POST { "sensitivity": <0-100> sensorSensitivity, "from": "15:00", "to":"19:00" } /settings
-    @RequestMapping(value = "/settings", method = RequestMethod.POST)
-    public void setThreshold(@RequestBody @Valid LightModel lightModel) {
-        LightModel.getInstance().setSensitivity(lightModel.getSensitivity());
-        LightModel.getInstance().setFrom(lightModel.getFrom());
-        LightModel.getInstance().setTo(lightModel.getTo());
-        System.out.println(lightModel.getSensitivity() + " " + lightModel.getFrom() + " " + lightModel.getTo());
-        System.out.println(LightModel.getInstance().getSensitivity() + " " + LightModel.getInstance().getFrom() + " " + LightModel.getInstance().getTo());
-        //lightModel.start();
-        //LightModel.getInstance().start();
+    @RequestMapping(value = "/settings"
+            , method = RequestMethod.POST,
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public void setThreshold(@RequestBody @Valid LightSettingsBody postBody) {
+        LightModel.getInstance().changeSystemSettings(
+                LocalTime.parse(postBody.getTo()),
+                LocalTime.parse(postBody.getFrom()),
+                postBody.getSensitivity()
+        );
     }
 
     // GET { "sensitivity": <0-100> sensorSensitivity, "from": "15:00", "to":"19:00" }  /settings
-    @RequestMapping(value = "/settings")
-    public ResponseEntity<LightModel> getThreshold() {
-        System.out.println(LightModel.getInstance());
-        return new ResponseEntity<>(LightModel.getInstance(), HttpStatus.OK);
+    @RequestMapping(value = "/settings",
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<LightSettingsBody> getThreshold() {
+        return new ResponseEntity<LightSettingsBody>(LightModel.getInstance().exportSettings(), HttpStatus.OK);
     }
 
     // GET days /dates

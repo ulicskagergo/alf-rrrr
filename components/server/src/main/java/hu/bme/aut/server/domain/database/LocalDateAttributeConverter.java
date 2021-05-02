@@ -1,4 +1,4 @@
-package hu.bme.aut.server.domain;
+package hu.bme.aut.server.domain.database;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

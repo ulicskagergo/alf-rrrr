@@ -1,6 +1,7 @@
 package hu.bme.aut.server.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import hu.bme.aut.server.domain.restapi.LightSettingsBody;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -12,15 +13,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LightModel {
+public final class LightModel {
 
     private final boolean RASPI_MODE = false;
 
     private static LightModel lightModel;
 
-    private static double microsecLow = 50; // 50 ms
-    private static double microsecHigh = 5000; // 5000 ms
-    private static int measurementPeriod = 15000; // 15 min
+    private static final double microsecLow = 50; // 50 ms
+    private static final double microsecHigh = 5000; // 5000 ms
+    private static final int measurementPeriod = 15000; // 15 min
 
     private Timer systemOnOffTimer;
     private Timer measureWriteTimer;
@@ -33,7 +34,7 @@ public class LightModel {
         return (lightModel == null) ? new LightModel() : lightModel;
     }
 
-    protected LightModel() {
+    private LightModel() {
         // set default settings
         changeSystemSettings(LocalTime.parse("11:00"), LocalTime.parse("18:00"), 50);
 
@@ -47,7 +48,11 @@ public class LightModel {
         }
     }
 
-    private void changeSystemSettings(LocalTime from, LocalTime until, int sensitivity) { // both for initialization and when changing settings
+    public LightSettingsBody exportSettings() {
+        return new LightSettingsBody(sensitivity, systemOnFrom, systemOnUntil);
+    }
+
+    public void changeSystemSettings(LocalTime from, LocalTime until, int sensitivity) { // both for initialization and when changing settings
         if(systemOnOffTimer!=null) { systemOnOffTimer.cancel(); }
         if(measureWriteTimer!=null) { measureWriteTimer.cancel(); }
 
@@ -186,40 +191,8 @@ public class LightModel {
         }
     }
 
+
     ////////////////////
-
-    public void start() {
-        // schedule with fixed delay
-        long fromL = Long.parseLong(from.substring(0, 2)) * 1000 * 60 + Long.parseLong(from.substring(3, 5)) * 1000;
-        long toL = Long.parseLong(to.substring(0, 2)) * 1000 * 60 + Long.parseLong(to.substring(3, 5)) * 1000;
-        long delay = toL - fromL;
-        long dailyPeriod = 1000L * 60L * 60L * 24L;
-        timer.schedule(timerTask, delay, dailyPeriod);
-    }
-
-    public void setSensitivity(Integer sensitivity) {
-        this.sensitivity = sensitivity;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
-    public void setTo(String to) {
-        this.to = to;
-    }
-
-    public Integer getSensitivity() {
-        return sensitivity;
-    }
-
-    public String getFrom() {
-        return from;
-    }
-
-    public String getTo() {
-        return to;
-    }
 
     /*
     private void measure() {
@@ -245,7 +218,7 @@ public class LightModel {
         }
     }
     */
-     */
+
 
     private Integer readFromDevice(BufferedReader bufferedReader) {
         int dataReceived = 0;

@@ -1,6 +1,6 @@
 package hu.bme.aut.server;
 
-import hu.bme.aut.server.domain.LightData;
+import hu.bme.aut.server.domain.database.LightData;
 import hu.bme.aut.server.repository.ServerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

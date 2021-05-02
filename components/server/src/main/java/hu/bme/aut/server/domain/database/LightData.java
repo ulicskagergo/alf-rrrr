@@ -1,7 +1,5 @@
-package hu.bme.aut.server.domain;
+package hu.bme.aut.server.domain.database;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
