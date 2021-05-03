@@ -149,8 +149,10 @@ public final class LightModel {
 
         // record measurement date into table
         MeasurementDay measurementDay = new MeasurementDay(record.getMeasureDate().toLocalDate());
-        measurementDayRepository.saveAndFlush(measurementDay);
-        System.out.println(measurement);
+        if (measurementDayRepository.findExistingMeasureDate(measurementDay.getMeasureDate()) == 0) {
+            measurementDayRepository.saveAndFlush(measurementDay);
+            System.out.println(measurement);
+        }
     }
 
     private int takeMeasurement() {
