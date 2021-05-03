@@ -46,9 +46,10 @@ public class ServerController {
             , method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     public void setThreshold(@RequestBody @Valid LightSettingsBody postBody) {
+        System.out.println("Settings POST");
         LightModel.getInstance().changeSystemSettings(
-                LocalTime.parse(postBody.getTo()),
                 LocalTime.parse(postBody.getFrom()),
+                LocalTime.parse(postBody.getTo()),
                 postBody.getSensitivity()
         );
     }
@@ -57,12 +58,14 @@ public class ServerController {
     @RequestMapping(value = "/settings",
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<LightSettingsBody> getThreshold() {
+        System.out.println("Settings GET");
         return new ResponseEntity<LightSettingsBody>(LightModel.getInstance().exportSettings(), HttpStatus.OK);
     }
 
     // GET days /dates
     @RequestMapping(value = "/dates")
-    public ResponseEntity<List<Object>> getDays() {
+    public ResponseEntity<List<String>> getDays() {
+
         return new ResponseEntity<>(serverRepository.findMeasurementDates(), HttpStatus.OK);
     }
 

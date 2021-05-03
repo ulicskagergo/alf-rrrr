@@ -1,6 +1,7 @@
 package hu.bme.aut.server.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import hu.bme.aut.server.ServerApplication;
 import hu.bme.aut.server.domain.database.LightData;
 import hu.bme.aut.server.domain.restapi.LightSettingsBody;
 import hu.bme.aut.server.repository.ServerRepository;
@@ -43,7 +44,6 @@ public final class LightModel {
         return lightModel;
     }
 
-
     private LightModel() {
         // set default settings
         changeSystemSettings(LocalTime.parse("10:00"), LocalTime.parse("18:00"), 50);
@@ -65,6 +65,7 @@ public final class LightModel {
         return new LightSettingsBody(sensitivity, systemOnFrom, systemOnUntil);
     }
 
+    // TODO timer restart hol?
     public void changeSystemSettings(LocalTime from, LocalTime until, int sensitivity) { // both for initialization and when changing settings
         if(systemOnOffTimer!=null) { systemOnOffTimer.cancel(); }
         if(measureWriteTimer!=null) { measureWriteTimer.cancel(); }
@@ -256,6 +257,7 @@ public final class LightModel {
         return (int) Math.round(value);
     }
 
+    // TODO használni, ahol kell
     private static int microsecToPercentage(int microsecValue) {
         // mapping 50-5000ms to 0-100%
         if(microsecValue<50) microsecValue = 50;

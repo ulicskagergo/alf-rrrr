@@ -30,48 +30,6 @@ public class ServerApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         LightModel.getInstance(); // starts the logic after creating a light model
-
-/*
-        int dataToSend, dataReceived;
-        Scanner scanner = new Scanner(System.in);
-        BufferedWriter bufferedWriter;
-        BufferedReader bufferedReader;
-        if (RASPI_MODE) {
-            bufferedWriter = new BufferedWriter(new FileWriter("/dev/ldrchar"));
-            bufferedReader = new BufferedReader(new FileReader("/dev/ldrchar"));
-        } else {
-            bufferedWriter = new BufferedWriter(new FileWriter("tmp.txt"));
-            bufferedReader = new BufferedReader(new FileReader("tmp.txt"));
-        }
-
-        while (true) {
-            dataToSend = scanner.nextInt();
-
-            if (dataToSend == -1) {
-                break;
-            } else if (dataToSend == 0 || dataToSend == 1) {
-
-                LightData lightData = new LightData();
-                lightData.setThreshold(333);        // tmp threshold
-
-                // read actual value
-                dataReceived = readFromDevice(bufferedReader);
-                lightData.setActualValue((dataReceived != -1) ? dataReceived : 0);
-
-                // turn on/off
-                writeToDevice(bufferedWriter, dataToSend);
-                lightData.setIsOn(dataToSend == 1);
-
-                lightData.setMeasureDate(LocalDateTime.now());
-                lightData = saveAndFlushLightData(lightData);
-            }
-
-            printLightDataBase(0, (int)serverRepository.count());
-        }
-        bufferedReader.close();
-        bufferedWriter.close();
-
- */
     }
 
     private void writeToDevice(BufferedWriter bufferedWriter, Integer dataToSend) {

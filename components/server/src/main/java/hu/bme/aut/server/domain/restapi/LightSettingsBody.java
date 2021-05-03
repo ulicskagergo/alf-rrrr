@@ -10,8 +10,8 @@ public class LightSettingsBody {
 
 	public LightSettingsBody(Integer sensitivity, LocalTime from, LocalTime to) {
 		this.sensitivity = sensitivity;
-		this.from = from.getHour() + ":" + from.getMinute();
-		this.to = to.getHour() + ":" + to.getMinute();
+		this.from = String.format("%02d", from.getHour()) + ":" + String.format("%02d", from.getMinute());
+		this.to = String.format("%02d", to.getHour()) + ":" + String.format("%02d", to.getMinute());
 	}
 
 	public String getTo() {
