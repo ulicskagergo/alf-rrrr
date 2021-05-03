@@ -2,6 +2,7 @@ package hu.bme.aut.server;
 
 import hu.bme.aut.server.domain.LightModel;
 import hu.bme.aut.server.domain.database.LightData;
+import hu.bme.aut.server.repository.MeasurementDayRepository;
 import hu.bme.aut.server.repository.ServerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -22,6 +23,9 @@ public class ServerApplication implements CommandLineRunner {
 
     @Autowired
     ServerRepository serverRepository;
+
+    @Autowired
+    MeasurementDayRepository measurementDayRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(ServerApplication.class, args);

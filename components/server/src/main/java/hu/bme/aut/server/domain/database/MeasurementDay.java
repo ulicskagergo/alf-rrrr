@@ -14,17 +14,22 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "MeasurementDays")
+@Table(name = "MeasurementDay")
 public class MeasurementDay {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id = 0;
 
-	@Column(name = "measurementDayDate", unique = true)
+	@Column(name = "measurement_day_date", unique = true)
 	private LocalDate measurementDayDate;
 
 	public MeasurementDay() { prePersist(); }
+
+	public MeasurementDay(LocalDate localDate) {
+		super();
+		this.measurementDayDate = localDate;
+	}
 
 	@PrePersist
 	private void prePersist() {

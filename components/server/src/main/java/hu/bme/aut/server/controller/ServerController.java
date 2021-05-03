@@ -3,6 +3,7 @@ package hu.bme.aut.server.controller;
 import hu.bme.aut.server.domain.database.LightData;
 import hu.bme.aut.server.domain.LightModel;
 import hu.bme.aut.server.domain.restapi.LightSettingsBody;
+import hu.bme.aut.server.repository.MeasurementDayRepository;
 import hu.bme.aut.server.repository.ServerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -25,6 +27,9 @@ public class ServerController {
 
     @Autowired
     private ServerRepository serverRepository;
+
+    @Autowired
+    private MeasurementDayRepository measurementDayRepository;
 
     @RequestMapping(value = "/data")
     @ResponseBody
@@ -64,9 +69,8 @@ public class ServerController {
 
     // GET days /dates
     @RequestMapping(value = "/dates")
-    public ResponseEntity<List<String>> getDays() {
-
-        return new ResponseEntity<>(serverRepository.findMeasurementDates(), HttpStatus.OK);
+    public ResponseEntity<List<LocalDate>> getDays() {
+        return new ResponseEntity<>(measurementDayRepository.findMeasurementDates(), HttpStatus.OK);
     }
 
     // GET all data per day /data/2021-05-30T15:13:48.934496

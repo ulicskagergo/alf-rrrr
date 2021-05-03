@@ -3,7 +3,9 @@ package hu.bme.aut.server.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import hu.bme.aut.server.ServerApplication;
 import hu.bme.aut.server.domain.database.LightData;
+import hu.bme.aut.server.domain.database.MeasurementDay;
 import hu.bme.aut.server.domain.restapi.LightSettingsBody;
+import hu.bme.aut.server.repository.MeasurementDayRepository;
 import hu.bme.aut.server.repository.ServerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,6 +23,9 @@ public final class LightModel {
 
     @Autowired
     private ServerRepository serverRepository;
+
+    @Autowired
+    private MeasurementDayRepository measurementDayRepository;
 
     private final boolean RASPI_MODE = false;
 
@@ -141,6 +146,11 @@ public final class LightModel {
         record.setActualValue(measurement);
         record.setThreshold(percentageToMicrosec(sensitivity)); // we only record data into the DB in microsec, never in %
         record = serverRepository.saveAndFlush(record);
+
+        // record measurement date into table
+        MeasurementDay measurementDay = new MeasurementDay(record.getMeasureDate().toLocalDate());
+        measurementDayRepository.saveAndFlush(measurementDay);
+        System.out.println(measurement);
     }
 
     private int takeMeasurement() {

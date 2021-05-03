@@ -1,22 +1,20 @@
-/*package hu.bme.aut.server.domain;
+package hu.bme.aut.server.domain.database;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.sql.Date;
-import java.time.LocalTime;
 
 @Converter(autoApply = true)
-public class LocalDateAttribute2Converter implements AttributeConverter<LocalDateTime, Timestamp> {
+public class LocalDateAttribute2Converter implements AttributeConverter<Date, LocalDate> {
 
     @Override
-    public Timestamp convertToDatabaseColumn(LocalDateTime locDate) {
-        return locDate == null ? null : Timestamp.valueOf(locDate);
+    public LocalDate convertToDatabaseColumn(Date date) {
+        return date == null ? null : date.toLocalDate();
     }
 
     @Override
-    public LocalDateTime convertToEntityAttribute(Timestamp timestamp) {
-        return timestamp == null ? null : timestamp.toLocalDateTime();
+    public Date convertToEntityAttribute(LocalDate localDate) {
+        return localDate == null ? null : Date.valueOf(localDate);
     }
-}*/
+}
