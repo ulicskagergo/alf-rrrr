@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ServerDemoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+  <configuration default="false" name="PlantLightServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="server-springboot" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="hu.bme.aut.server.ServerApplication" />
     <option name="ALTERNATIVE_JRE_PATH" />
