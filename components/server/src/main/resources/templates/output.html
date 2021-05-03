@@ -1,0 +1,19 @@
+<!--Output data-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Output</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <form action="#" th:action="@{/}" th:object="${lightData}" method="post">
+        <th:block th:each="ld : ${lightData}">
+            <p th:text="${ld}"></p>
+        </th:block>
+        <th:block th:each="m : ${messages}">
+            <p th:text="${m}"></p>
+        </th:block>
+    </form>
+</body>
+</html>
