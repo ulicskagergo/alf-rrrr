@@ -34,21 +34,6 @@ public class ServerController {
     @Autowired
     private LightModel lightModel;
 
-    @RequestMapping(value = "/data")
-    @ResponseBody
-    public ResponseEntity<List<LightData>> getAllData() {
-        return new ResponseEntity<List<LightData>>(serverRepository.findAll(), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/data", method = RequestMethod.POST)
-    public LightData saveData(@RequestBody @Valid LightData lightData, Model model) {
-        serverRepository.saveAndFlush(lightData);
-        Pageable pageable = PageRequest.of(0, (int)serverRepository.count());
-        Page<LightData> page = serverRepository.findAll(pageable);
-        model.addAttribute("lightData", page.getContent());
-        return lightData;
-    }
-
     // POST { "sensitivity": <0-100> sensorSensitivity, "from": "15:00", "to":"19:00" } /settings
     @RequestMapping(value = "/settings"
             , method = RequestMethod.POST,
@@ -76,10 +61,11 @@ public class ServerController {
         return new ResponseEntity<>(measurementDayRepository.findMeasurementDates(), HttpStatus.OK);
     }
 
-    // GET all data per day /data/2021-05-30T15:13:48.934496
+    // GET all data per day /data/2021-05-30
     @RequestMapping(value = "/data/{measure_date}")
-    public ResponseEntity<List<LightData>> getDataByMeasureDate(@PathVariable("measure_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime measureDate) {
-        return new ResponseEntity<>(serverRepository.findLightDataMeasuredOnDay(measureDate), HttpStatus.OK);
+    public ResponseEntity<List<LightData>> getDataByMeasureDate(@PathVariable("measure_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate measureDate) {
+        LocalDateTime measureDayTime = measureDate.atTime(0,0,0);
+        return new ResponseEntity<>(serverRepository.findLightDataMeasuredOnDay(measureDayTime), HttpStatus.OK);
     }
 
 

@@ -40,7 +40,7 @@ To test POST with ```curl```:
 ```
 
 ```bash
- curl -X GET http://localhost:8080/data/2021-05-30T15:13:48.934496
+ curl -X GET http://localhost:8080/data/2021-05-03T00:00:00.000000
 ```
 
 ```bash
