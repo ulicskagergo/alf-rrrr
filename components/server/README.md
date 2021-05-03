@@ -14,7 +14,7 @@ mvn compile
 
 Run the project:
 ```bash
-mvn exec:java -Dexec.mainClass="hu.bme.aut.server.ServerDemoApplication"
+mvn exec:java -Dexec.mainClass="hu.bme.aut.server.ServerApplication"
 ```
 
 
