@@ -8,6 +8,9 @@ import hu.bme.aut.server.domain.restapi.LightSettingsBody;
 import hu.bme.aut.server.repository.MeasurementDayRepository;
 import hu.bme.aut.server.repository.ServerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
@@ -19,6 +22,8 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+@Component
+@Scope("singleton")
 public final class LightModel {
 
     @Autowired
@@ -33,7 +38,7 @@ public final class LightModel {
 
     private static final double microsecLow = 50; // 50 ms
     private static final double microsecHigh = 5000; // 5000 ms
-    private static final int measurementPeriod = 15000; // 15 min
+    private static final int measurementPeriod = 2*60000; // TODO 15 min (most 2 min)
 
     private Timer systemOnOffTimer;
     private Timer measureWriteTimer;
@@ -42,20 +47,16 @@ public final class LightModel {
     private LocalTime systemOnFrom;
     private LocalTime systemOnUntil;
 
-    public static LightModel getInstance() {
-        if(lightModel==null) {
-            lightModel = new LightModel();
-        }
-        return lightModel;
-    }
-
     private LightModel() {
+        System.out.println(" [ DEBUG ] LightModel c'tor begin at " + LocalDateTime.now().toString());
         // set default settings
         changeSystemSettings(LocalTime.parse("10:00"), LocalTime.parse("18:00"), 50);
+        System.out.println(" [ DEBUG ] LightModel c'tor end at " + LocalDateTime.now().toString());
     }
 
     @PostConstruct
     private void initializeTimers() {
+        System.out.println(" [ DEBUG ] initializeTimers() call at " + LocalDateTime.now().toString());
         // start the appropriate timers
         if(LocalTime.now().compareTo(systemOnFrom) >= 0 && LocalTime.now().compareTo(systemOnUntil) < 0) { // system should be on right now
             setSystemTurnOffTimer();
@@ -67,17 +68,23 @@ public final class LightModel {
     }
 
     public LightSettingsBody exportSettings() {
+        System.out.println(" [ DEBUG ] exportSettings() call at " + LocalDateTime.now().toString());
         return new LightSettingsBody(sensitivity, systemOnFrom, systemOnUntil);
     }
 
-    // TODO timer restart hol?
-    public void changeSystemSettings(LocalTime from, LocalTime until, int sensitivity) { // both for initialization and when changing settings
+    private void changeSystemSettings(LocalTime from, LocalTime until, int sensitivity) { // both for initialization and when changing settings
         if(systemOnOffTimer!=null) { systemOnOffTimer.cancel(); }
         if(measureWriteTimer!=null) { measureWriteTimer.cancel(); }
 
         systemOnFrom = from;
         systemOnUntil = until;
         this.sensitivity = sensitivity;
+    }
+
+    public void restartWithSettings(LocalTime from, LocalTime until, int sensitivity) {
+        System.out.println(" [ DEBUG ] restartWithSettings( " + from + ", " + until + ", " + sensitivity + " ) call at " + LocalDateTime.now().toString());
+        changeSystemSettings(from, until, sensitivity);
+        initializeTimers();
     }
 
     // should only be called, when time is past (or equals) turn off (and before turn on)
@@ -90,11 +97,18 @@ public final class LightModel {
                 turnSystemOn();
             }
         };
+        // time of turning on can be today or tomorrow (as the user can update the settings arbitrarily)
         LocalDateTime turnOnDateTime = LocalDateTime.now().with(systemOnFrom);
+        if(turnOnDateTime.isBefore(LocalDateTime.now())) {
+            // we know, that right now the system should be turned off, so iw we are past the turn On time
+            // then we are past the whole truned on interval and should turn on next tomorrow
+            turnOnDateTime = turnOnDateTime.plusDays(1);
+        }
         Date turnOnDate = Date.from(turnOnDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
         systemOnOffTimer = new Timer();
         systemOnOffTimer.schedule(turnOn, turnOnDate);
+        System.out.println(" [ DEBUG ] setSystemTurnOnTimer call to " + turnOnDateTime.toString() + " at " + LocalDateTime.now().toString());
     }
 
     // should only be called, when time is past (or equals) turn on (and before turn off)
@@ -107,14 +121,17 @@ public final class LightModel {
                 setSystemTurnOnTimer();
             }
         };
+        // time of turning off must be today
         LocalDateTime turnOffDateTime = LocalDateTime.now().with(systemOnUntil);
         Date turnOffDate = Date.from(turnOffDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
         systemOnOffTimer = new Timer();
         systemOnOffTimer.schedule(turnOff, turnOffDate);
+        System.out.println(" [ DEBUG ] setSystemTurnOffTimer call " + turnOffDateTime.toString() + " at " + LocalDateTime.now().toString());
     }
 
     private void turnSystemOn() {
+        System.out.println(" [ DEBUG ] turnSystemOn call at " + LocalDateTime.now().toString());
         if(measureWriteTimer!=null) { // just to be sure, but should never happen
             measureWriteTimer.cancel();
         }
@@ -131,6 +148,7 @@ public final class LightModel {
     }
 
     private void turnSystemOff() {
+        System.out.println(" [ DEBUG ] turnSystemOff call at " + LocalDateTime.now().toString());
         if(measureWriteTimer!=null) { // turning the periodic measurements off
             measureWriteTimer.cancel();
         }
@@ -139,6 +157,8 @@ public final class LightModel {
 
     // takes a measurement, adjusts lights based on that and records measurement in the DB
     private void measureAndSetLights() {
+        System.out.println(" [ DEBUG ] measureAndSetLights call at " + LocalDateTime.now().toString());
+
         LightData record = new LightData();
         record.setMeasureDate(LocalDateTime.now());
         int measurement = takeMeasurement();
@@ -194,10 +214,12 @@ public final class LightModel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println(" [ DEBUG ] Measurement taken at " + LocalDateTime.now().toString() + ", avg is " + avg);
         return avg;
     }
 
     private boolean adjustLights(int measurement) {
+        System.out.println(" [ DEBUG ] Called adjustLights(" + measurement + ") at " + LocalDateTime.now().toString());
         boolean turnLightsOn = false;
         if(percentageToMicrosec(sensitivity) < measurement) {
             turnLightsOn = false;
@@ -210,6 +232,7 @@ public final class LightModel {
 
     // turns lights on or off, based on the boolean
     private void switchLights(boolean lightsOn) {
+        System.out.println(" [ DEBUG ] Called switchLights(" + lightsOn + ") at " + LocalDateTime.now().toString());
         if(lightsOn) {
             writeToDevice(1);
         } else {
@@ -232,6 +255,7 @@ public final class LightModel {
             }
             bufferedWriter.write(msg + 48); // we send an ASCII char here
             bufferedWriter.flush();
+            System.out.println("[ DEBUG ] stringSentToDriver: " + (char)(msg+48));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -269,7 +293,7 @@ public final class LightModel {
         return (int) Math.round(value);
     }
 
-    // TODO használni, ahol kell
+    // TODO not used (never needed(?)) - delete?
     private static int microsecToPercentage(int microsecValue) {
         // mapping 50-5000ms to 0-100%
         if(microsecValue<50) microsecValue = 50;
@@ -280,5 +304,4 @@ public final class LightModel {
 
         return (int) Math.round(value);
     }
-
 }

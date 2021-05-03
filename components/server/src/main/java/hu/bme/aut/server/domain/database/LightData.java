@@ -26,13 +26,13 @@ public class LightData {
     // TODO minmax validation
     @Column(name = "threshold")
     @Min(0)
-    @Max(999)
+    @Max(100000)
     private int threshold;
 
     // 50-3000 - 0-100 map és 50 alatt 0, 3000 felett 100
     @Column(name = "actual_value")
     @Min(0)
-    @Max(999)
+    @Max(100000)
     private int actualValue;
 
     public LightData(){

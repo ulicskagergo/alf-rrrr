@@ -31,6 +31,9 @@ public class ServerController {
     @Autowired
     private MeasurementDayRepository measurementDayRepository;
 
+    @Autowired
+    private LightModel lightModel;
+
     @RequestMapping(value = "/data")
     @ResponseBody
     public ResponseEntity<List<LightData>> getAllData() {
@@ -52,7 +55,7 @@ public class ServerController {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     public void setThreshold(@RequestBody @Valid LightSettingsBody postBody) {
         System.out.println("Settings POST");
-        LightModel.getInstance().changeSystemSettings(
+        lightModel.restartWithSettings(
                 LocalTime.parse(postBody.getFrom()),
                 LocalTime.parse(postBody.getTo()),
                 postBody.getSensitivity()
@@ -64,7 +67,7 @@ public class ServerController {
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<LightSettingsBody> getThreshold() {
         System.out.println("Settings GET");
-        return new ResponseEntity<LightSettingsBody>(LightModel.getInstance().exportSettings(), HttpStatus.OK);
+        return new ResponseEntity<LightSettingsBody>(lightModel.exportSettings(), HttpStatus.OK);
     }
 
     // GET days /dates
