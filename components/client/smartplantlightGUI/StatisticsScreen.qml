@@ -139,7 +139,6 @@ Charts {
 
                     Component.onCompleted: {
                         RESTClient.getDates();
-                        RESTClient.getPoints(0);
                     }
                 }
             }

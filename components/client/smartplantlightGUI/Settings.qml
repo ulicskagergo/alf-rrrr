@@ -32,7 +32,7 @@ Item {
                 TextInput {
                     id: fromtoText
                     inputMask: "99:99 - 99:99"// input mask
-                    text: "07:00 - 19:00" // default text
+                    text: "00:00 - 00:00" // default text
                     inputMethodHints: Qt.ImhDigitsOnly
                     validator: RegExpValidator { regExp: /^([0-1\s]?[0-9\s]|2[0-3\s]):([0-5\s][0-9\s]) - ([0-1\s]?[0-9\s]|2[0-3\s]):([0-5\s][0-9\s])$ / }
                     onFocusChanged: {
