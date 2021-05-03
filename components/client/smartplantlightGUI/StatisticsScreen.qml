@@ -110,6 +110,7 @@ Charts {
                         text: "Choose a day:"
                     }
 
+
                     Component {
                         id: contactsDelegate
                         Rectangle {
@@ -127,8 +128,10 @@ Charts {
                             MouseArea {
                                 anchors.fill: parent
                                 onClicked: {
-                                    list.currentIndex = index;
-                                    lightchart.dateChanged(index);
+                                    if(index>=0) { // initially it's -1 (no pre-selection) - in this case we don't want to load the charts yet
+                                        list.currentIndex = index;
+                                        lightchart.dateChanged(index);
+                                    }
                                 }
                             }
                         }
@@ -138,6 +141,7 @@ Charts {
                     delegate: contactsDelegate
 
                     Component.onCompleted: {
+                        list.currentIndex = -1;
                         RESTClient.getDates();
                     }
                 }
