@@ -51,7 +51,6 @@ public class MeasurementDay {
 	@Override
 	public String toString() {
 		return "[ DEBUG ] id: " + id + ", " + toJSON().toString();
-		//return String.format("[ %d, %s, %b, %d, %d ]", id, measureDate, isOn, threshold, actualValue);
 	}
 
 	public JSONObject toJSON() {

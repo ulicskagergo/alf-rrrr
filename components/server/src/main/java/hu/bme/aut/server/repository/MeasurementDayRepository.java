@@ -10,7 +10,6 @@ import java.util.List;
 
 public interface MeasurementDayRepository extends JpaRepository<MeasurementDay, Integer> {
 
-    //@Query(value = "SELECT measurement_day_date FROM MeasurementDay", nativeQuery = true)
     @Query("SELECT md.measurementDayDate FROM MeasurementDay md")
     List<LocalDate> findMeasurementDates();
 

@@ -1,14 +1,11 @@
 package hu.bme.aut.server.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import hu.bme.aut.server.ServerApplication;
 import hu.bme.aut.server.domain.database.LightData;
 import hu.bme.aut.server.domain.database.MeasurementDay;
 import hu.bme.aut.server.domain.restapi.LightSettingsBody;
 import hu.bme.aut.server.repository.MeasurementDayRepository;
 import hu.bme.aut.server.repository.ServerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

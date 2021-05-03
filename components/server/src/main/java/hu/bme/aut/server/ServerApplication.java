@@ -40,6 +40,4 @@ public class ServerApplication implements CommandLineRunner {
         // lightModel.restartWithSettings(LocalTime.parse("10:00"), LocalTime.parse("18:00"), 50);
         // LightModel.getInstance(); // starts the logic after creating a light model
     }
-
-    // TODO all CRUD
 }
