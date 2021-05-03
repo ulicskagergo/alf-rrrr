@@ -11,7 +11,7 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        pageLoader.source = "SettingsScreen.qml"
+        pageLoader.source = "SetIP.qml"
     }
 
     id: main

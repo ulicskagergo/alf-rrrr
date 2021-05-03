@@ -1,10 +1,16 @@
-const baseURL = "http://localhost:8080"
+var baseURL = "http://localhost:8080"
 const getPointsExtension = "/data"
 const settingsUpdateExtension = "/settings" // both send and receive / GET and PUSH
 const getDatesExtension = "/dates"
 
 var pointsObj
 var dates
+
+function setIP(ipaddress) {
+    console.log(ipaddress)
+    baseURL = "http://" + ipaddress + ":8080";
+    console.log("URL is set to: " + baseURL);
+}
 
 // get data points on a given day ( dates[dateIndex] day )
 function getPoints(dateIndex) {
@@ -32,29 +38,10 @@ function getPoints(dateIndex) {
     xmlhttp.open("GET", baseURL+getPointsExtension+"/"+dateToSend.toISOString().split("T")[0], true);
     xmlhttp.send();
 
-    ///// TEST CODE
-    /*
-    console.log("called getPoints")
-    var pointsJson;
-    pointsJson = '{'
-        +'"points":'
-        +'[{"is_on":true, "actual_value":10, "time":"2021-04-30T13:32:56.675310"},'
-        +'{"is_on":true, "actual_value":10, "time":"2021-04-30T14:32:56.675310"},'
-        +'{"is_on":false, "actual_value":80, "time":"2021-04-30T15:33:36.675310"}'
-    +']}';
-    */
-    ///// TEST CODE END
-
 }
 
 
 function getDates() {
-    ///// TEST CODE
-    /*
-    console.log("called getDates")
-    var datesJson = '[ "2021-04-23", "2021-04-24", "2021-04-26" ]';
-    */
-    ///// TEST CODE END
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
       if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
@@ -93,17 +80,6 @@ function pushSettings(sensorSensitivity, from, to) {
 
     console.log("Sending settings:" + JSON.stringify(newSettingsObj));
     xmlhttp.send(JSON.stringify(newSettingsObj));
-    ///// TEST CODExmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    /*
-    console.log("pushSettings: sens:" + sensorSensitivity + ", from-to: " + from + "," + to);
-    var newSettingsObj = {
-        sensitivity:sensorSensitivity, // e.g. 80
-        from: from, // e.g. 15:00
-        to: to // e.g. 19:00
-    }
-    console.log("pushSettings sent: " + JSON.stringify(newSettingsObj));
-    */
-    ///// TEST CODE END
 }
 
 // received: { "sensitivity": sensorSensitivity, "from": "13:00", "to":"20:00" }
@@ -120,15 +96,4 @@ function pullSettings() {
     };
     xmlhttp.open("GET", baseURL + settingsUpdateExtension, true);
     xmlhttp.send();
-
-    ///// TEST CODE
-    /*
-    console.log("pullSettings called");
-    var received = '{ "sensitivity": 80, "from": "13:00", "to":"20:00" }';
-    var settingsObj = JSON.parse(received);
-    lightSlider.value = settingsObj.sensitivity;
-    var fromto = settingsObj.from + " - " + settingsObj.to;
-    fromtoText.text = fromto;
-    */
-    ///// TEST CODE END
 }
