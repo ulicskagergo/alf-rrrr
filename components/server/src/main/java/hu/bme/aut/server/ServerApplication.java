@@ -1,5 +1,6 @@
 package hu.bme.aut.server;
 
+import hu.bme.aut.server.domain.LightModel;
 import hu.bme.aut.server.domain.database.LightData;
 import hu.bme.aut.server.repository.ServerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class ServerApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        LightModel.getInstance(); // starts the logic after creating a light model
+
+/*
         int dataToSend, dataReceived;
         Scanner scanner = new Scanner(System.in);
         BufferedWriter bufferedWriter;
@@ -66,6 +70,8 @@ public class ServerApplication implements CommandLineRunner {
         }
         bufferedReader.close();
         bufferedWriter.close();
+
+ */
     }
 
     private void writeToDevice(BufferedWriter bufferedWriter, Integer dataToSend) {

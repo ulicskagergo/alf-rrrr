@@ -3,7 +3,10 @@ package hu.bme.aut.server.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import hu.bme.aut.server.domain.database.LightData;
 import hu.bme.aut.server.domain.restapi.LightSettingsBody;
+import hu.bme.aut.server.repository.ServerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -13,8 +16,10 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public final class LightModel {
+
+    @Autowired
+    private ServerRepository serverRepository;
 
     private final boolean RASPI_MODE = false;
 
@@ -32,13 +37,20 @@ public final class LightModel {
     private LocalTime systemOnUntil;
 
     public static LightModel getInstance() {
-        return (lightModel == null) ? new LightModel() : lightModel;
+        if(lightModel==null) {
+            lightModel = new LightModel();
+        }
+        return lightModel;
     }
+
 
     private LightModel() {
         // set default settings
-        changeSystemSettings(LocalTime.parse("11:00"), LocalTime.parse("18:00"), 50);
+        changeSystemSettings(LocalTime.parse("10:00"), LocalTime.parse("18:00"), 50);
+    }
 
+    @PostConstruct
+    private void initializeTimers() {
         // start the appropriate timers
         if(LocalTime.now().compareTo(systemOnFrom) >= 0 && LocalTime.now().compareTo(systemOnUntil) < 0) { // system should be on right now
             setSystemTurnOffTimer();
@@ -127,7 +139,7 @@ public final class LightModel {
         record.setIsOn(adjustLights(measurement)); // turn lights on or off, based on measurement
         record.setActualValue(measurement);
         record.setThreshold(percentageToMicrosec(sensitivity)); // we only record data into the DB in microsec, never in %
-        record = saveAndFlushLightData(record);
+        record = serverRepository.saveAndFlush(record);
     }
 
     private int takeMeasurement() {
