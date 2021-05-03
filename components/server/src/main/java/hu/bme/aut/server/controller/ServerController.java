@@ -5,6 +5,8 @@ import hu.bme.aut.server.domain.LightModel;
 import hu.bme.aut.server.domain.restapi.LightSettingsBody;
 import hu.bme.aut.server.repository.MeasurementDayRepository;
 import hu.bme.aut.server.repository.ServerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,8 @@ import java.util.List;
  */
 @RestController
 public class ServerController {
+
+    private static final Logger log= LoggerFactory.getLogger(ServerController.class);
 
     /**
      * Repository for light data
@@ -91,7 +95,7 @@ public class ServerController {
             , method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     public void setThreshold(@RequestBody @Valid LightSettingsBody postBody) {
-        System.out.println("Settings POST");
+        log.info("Settings POST");
         lightModel.restartWithSettings(
                 LocalTime.parse(postBody.getFrom()),
                 LocalTime.parse(postBody.getTo()),
@@ -108,7 +112,7 @@ public class ServerController {
     @RequestMapping(value = "/settings",
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<LightSettingsBody> getThreshold() {
-        System.out.println("Settings GET");
+        log.info("Settings GET");
         return new ResponseEntity<LightSettingsBody>(lightModel.exportSettings(), HttpStatus.OK);
     }
 
@@ -120,6 +124,7 @@ public class ServerController {
      */
     @RequestMapping(value = "/dates")
     public ResponseEntity<List<LocalDate>> getDays() {
+        log.info("Dates GET");
         return new ResponseEntity<>(measurementDayRepository.findMeasurementDates(), HttpStatus.OK);
     }
 
@@ -132,6 +137,7 @@ public class ServerController {
      */
     @RequestMapping(value = "/data/{measure_date}")
     public ResponseEntity<List<LightData>> getDataByMeasureDate(@PathVariable("measure_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate measureDate) {
+        log.info("data points GET at day " + measureDate.toString());
         LocalDateTime measureDayTime = measureDate.atTime(0,0,0);
         return new ResponseEntity<>(serverRepository.findLightDataMeasuredOnDay(measureDayTime), HttpStatus.OK);
     }
