@@ -28,7 +28,6 @@ function getPoints(dateIndex) {
 
       }
     };
-    console.log(dates);
     var dateToSend = dates[dateIndex];
     xmlhttp.open("GET", baseURL+getPointsExtension+"/"+dateToSend.toISOString().split("T")[0], true);
     xmlhttp.send();
@@ -59,7 +58,7 @@ function getDates() {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
       if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-          console.log("dates received");
+          console.log("dates received: " + xmlhttp.responseText);
           var stringDates = JSON.parse(xmlhttp.responseText);
           if(listmodel.count>0) {
               listmodel.remove(0, listmodel.count);
@@ -69,7 +68,6 @@ function getDates() {
           for(var i in stringDates) {
               dates[i] = new Date(stringDates[i]);
               var dict = { "date": dates[i].toDateString() }
-              console.log(dict["date"]);
               listmodel.append(dict);
           }
       }
@@ -83,7 +81,6 @@ function pushSettings(sensorSensitivity, from, to) {
     xmlhttp.onreadystatechange = function() {
       if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
         console.log("settings push successful");
-        console.log(xmlhttp.responseText);
       }
     };
     xmlhttp.open('POST', baseURL + settingsUpdateExtension, true);
@@ -94,9 +91,9 @@ function pushSettings(sensorSensitivity, from, to) {
         to: to // e.g. 19:00
     }
 
+    console.log("Sending settings:" + JSON.stringify(newSettingsObj));
     xmlhttp.send(JSON.stringify(newSettingsObj));
-    console.log(JSON.stringify(newSettingsObj));
-    ///// TEST CODE
+    ///// TEST CODExmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     /*
     console.log("pushSettings: sens:" + sensorSensitivity + ", from-to: " + from + "," + to);
     var newSettingsObj = {
@@ -115,7 +112,7 @@ function pullSettings() {
     xmlhttp.onreadystatechange = function() {
       if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
         var settingsObj = JSON.parse(xmlhttp.responseText);
-        console.log(settingsObj);
+        console.log("Pulling settings: " + xmlhttp.responseText);
         lightSlider.value = settingsObj.sensitivity;
         var fromto = settingsObj.from + " - " + settingsObj.to;
         fromtoText.text = fromto;
@@ -123,7 +120,6 @@ function pullSettings() {
     };
     xmlhttp.open("GET", baseURL + settingsUpdateExtension, true);
     xmlhttp.send();
-    console.log("sent");
 
     ///// TEST CODE
     /*

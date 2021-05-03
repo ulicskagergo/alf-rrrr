@@ -74,9 +74,6 @@ ColumnLayout {
             pointLabelsVisible: false
             pointsVisible: true
         }
-        Component.onCompleted: {
-            RESTClient.getPoints()
-        }
 
     }
 
