@@ -5,6 +5,9 @@ import javax.persistence.Converter;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+/**
+ * Converter for Java LocalDateTime and SQL TIMESTAMP formats
+ */
 @Converter(autoApply = true)
 public class LocalDateTimeToTimestampAttributeConverter implements AttributeConverter<LocalDateTime, Timestamp> {
 

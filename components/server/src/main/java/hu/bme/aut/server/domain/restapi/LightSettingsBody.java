@@ -2,18 +2,37 @@ package hu.bme.aut.server.domain.restapi;
 
 import java.time.LocalTime;
 
-// used to handle incoming and outgoing (GET and POST) light settings - not used in the actual LightModel
+/**
+ * Class for handling incoming ang outgoing light settings (GET and POST)
+ */
 public class LightSettingsBody {
-	private Integer sensitivity; // between 0-100
-	private String from; // e.g. 15:00
-	private String to; // e.g. 19:00
 
+	/**
+	 * Light settings
+	 * 		sensitivity of light	(between 0 and 100)
+	 * 		measurement begin		(format: 15:00)
+	 * 		measurement end			(format: 19:00)
+	 */
+	private Integer sensitivity;
+	private String from;
+	private String to;
+
+	/**
+	 * Constructor from given settings
+	 *
+	 * @param sensitivity	sensitivity of light
+	 * @param from			measurement begin
+	 * @param to			measurement end
+	 */
 	public LightSettingsBody(Integer sensitivity, LocalTime from, LocalTime to) {
 		this.sensitivity = sensitivity;
 		this.from = String.format("%02d", from.getHour()) + ":" + String.format("%02d", from.getMinute());
 		this.to = String.format("%02d", to.getHour()) + ":" + String.format("%02d", to.getMinute());
 	}
 
+	/**
+	 * Getters for parameters
+	 */
 	public String getTo() {
 		return to;
 	}

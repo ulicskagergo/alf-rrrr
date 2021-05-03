@@ -6,39 +6,67 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
+/**
+ * Entity for measured light data
+ * Represents LightData SQL table
+ */
 @Entity
 @Table(name = "LightData")
 public class LightData {
 
+    /**
+     * Identifier generated automatically
+     */
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id = 0;
 
+    /**
+     * Timestamp of measurement
+     */
     @Column(name = "measure_date")
     @Past
     private LocalDateTime measureDate;
 
+    /**
+     * Switch for measurement
+     */
     @Column(name = "is_on")
     @NotNull
     private boolean isOn;
 
-    // TODO minmax validation
+    /**
+     * Sensitivity of light
+     */
     @Column(name = "threshold")
     @Min(0)
     @Max(100000)
     private int threshold;
 
-    // 50-3000 - 0-100 map és 50 alatt 0, 3000 felett 100
+    /**
+     * Actual measured value
+     */
     @Column(name = "actual_value")
     @Min(0)
     @Max(100000)
     private int actualValue;
 
+    /**
+     * Constructor for prepersist
+     */
     public LightData(){
         prePersist();
     }
 
+    /**
+     * Constructor from given data
+     *
+     * @param measureDate   timestamp of measurement
+     * @param isOn          is light turned in
+     * @param threshold     sensitivity of light
+     * @param actualValue   actual measured value
+     */
     public LightData(LocalDateTime measureDate, boolean isOn, int threshold, int actualValue) {
         super();
         this.measureDate = measureDate;
@@ -47,11 +75,17 @@ public class LightData {
         this.actualValue = actualValue;
     }
 
+    /**
+     * If timestamp is not given, generate actual time
+     */
     @PrePersist
     private void prePersist() {
         if (measureDate == null) measureDate = LocalDateTime.now();
     }
 
+    /**
+     * Getters and setters for parameters
+     */
     public int getId() {
         return id;
     }
@@ -92,21 +126,36 @@ public class LightData {
         this.actualValue = actualValue;
     }
 
+    /**
+     * Print light data in JSON format
+     *
+     * @return  light data in string JSON format
+     */
     @Override
     public String toString() {
         return "[ DEBUG ]" + toJSON().toString();
     }
 
+    /**
+     * Construct JSON object
+     *
+     * @return	JSON object
+     */
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
-        obj.put("measure_date", measureDate);   //
+        obj.put("measure_date", measureDate);
         obj.put("is_on", isOn);
-        obj.put("threshold", threshold);        // %, sensitivity
-        obj.put("actual_value", actualValue);   // %
+        obj.put("threshold", threshold);
+        obj.put("actual_value", actualValue);
         return obj;
     }
 
+    /**
+     * Generate hash code for database
+     *
+     * @return  hash code
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -115,6 +164,12 @@ public class LightData {
         return result;
     }
 
+    /**
+     * Compare to light data
+     *
+     * @param obj   to be compared object
+     * @return      true if the same
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

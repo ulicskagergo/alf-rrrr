@@ -5,6 +5,9 @@ import javax.persistence.Converter;
 import java.time.LocalDate;
 import java.sql.Date;
 
+/**
+ * Converter for SQL DATE format and Java LocalDate formats
+ */
 @Converter(autoApply = true)
 public class LocalDateToDateAttribute2Converter implements AttributeConverter<Date, LocalDate> {
 
