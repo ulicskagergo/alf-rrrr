@@ -17,6 +17,10 @@ Run the project:
 mvn exec:java -Dexec.mainClass="hu.bme.aut.server.ServerApplication"
 ```
 
+To customize the log level of the project use the following flag (it is INFO by default):
+```
+-Dlogging.level.hu.aut.server=DEBUG
+```
 
 Optional: if you want to build and install into your local Maven repository (first delete the target folder):
 ```bash
