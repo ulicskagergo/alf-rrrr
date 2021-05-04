@@ -55,8 +55,8 @@ public final class LightModel {
     /**
      * Validation boundaries
      */
-    private static final double microsecLow = 50;           // 50 ms
-    private static final double microsecHigh = 2000;        // 2000 ms
+    private static final double microsecLow = 5;           // 50 ms
+    private static final double microsecHigh = 1500;        // 2000 ms
     private static final int measurementPeriod = 10*60000; // 15 min
 
     /**
@@ -382,7 +382,7 @@ public final class LightModel {
      * @return                  converted microseconds
      */
     private static int percentageToMicrosec(int percentageValue) {
-        // mapping 0-100% to 50-5000ms
+        // mapping 0-100% to ms low and high
         if(percentageValue>100 || percentageValue<0) {
             throw new IndexOutOfBoundsException("Sensitivity should be between 0 and 100");
         }
@@ -399,8 +399,8 @@ public final class LightModel {
      */
     private static int microsecToPercentage(int microsecValue) {
         // mapping 50-5000ms to 0-100%
-        if(microsecValue<50) microsecValue = 50;
-        else if(microsecValue>5000) microsecValue = 5000;
+        if(microsecValue<microsecLow) microsecValue = (int)microsecLow;
+        else if(microsecValue>microsecHigh) microsecValue = (int)microsecHigh;
 
         // remapping formula (from 1 to 2): "low2 + (value - low1) * (high2 - low2) / (high1 - low1)"
         double value = 0.0 + ((double)microsecValue- microsecLow) * (100.0-0.0) / (microsecHigh - microsecLow);
