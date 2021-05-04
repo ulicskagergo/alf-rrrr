@@ -101,7 +101,7 @@ Item {
             if((fromHour < toHour) || ( fromHour === toHour && fromMin < toMin )) {
                 RESTClient.pushSettings(lightSlider.value, fromtoText.text.split(" - ")[0], fromtoText.text.split(" - ")[1]);
             } else {
-                   errorMsg.visible = true;
+                errorMsg.visible = true;
             }
 
         }
