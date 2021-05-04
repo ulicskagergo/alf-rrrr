@@ -57,7 +57,7 @@ public final class LightModel {
      */
     private static final double microsecLow = 50;           // 50 ms
     private static final double microsecHigh = 2000;        // 2000 ms
-    private static final int measurementPeriod = 15*60000; // 15 min
+    private static final int measurementPeriod = 10*60000; // 15 min
 
     /**
      * Timer for light switch
