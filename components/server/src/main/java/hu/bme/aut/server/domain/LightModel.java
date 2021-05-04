@@ -55,7 +55,6 @@ public final class LightModel {
     /**
      * Validation boundaries
      */
-    private static final double microsecLow = 5;           // 50 ms
     private static final double microsecHigh = 1500;        // 2000 ms
     private static final int measurementPeriod = 10*60000; // 15 min
 
@@ -302,9 +301,9 @@ public final class LightModel {
         log.debug("Called adjustLights(" + measurement + ") at " + LocalDateTime.now().toString());
         boolean turnLightsOn = false;
         if(percentageToMicrosec(sensitivity) < measurement) {
-            turnLightsOn = false;
-        } else {
             turnLightsOn = true;
+        } else {
+            turnLightsOn = false;
         }
         switchLights(turnLightsOn);
         return turnLightsOn;
@@ -315,7 +314,7 @@ public final class LightModel {
      *
      * @param lightsOn  true - switch lights on; false - switch lights off
      */
-    private void switchLights(boolean lightsOn) {
+    public void switchLights(boolean lightsOn) {
         log.info("Switching lights " + (lightsOn ? "on" : "off") + " at " + LocalDateTime.now().toString());
         if(lightsOn) {
             writeToDevice(1);
@@ -386,25 +385,10 @@ public final class LightModel {
         if(percentageValue>100 || percentageValue<0) {
             throw new IndexOutOfBoundsException("Sensitivity should be between 0 and 100");
         }
+        // 0% is 0, 50% is around 500, 100% is 2000
+        double expValue = Math.pow(1.03, percentageValue)/Math.pow(1.03, 100)*microsecHigh;
         // remapping formula (from 1 to 2): "low2 + (value - low1) * (high2 - low2) / (high1 - low1)"
-        double value = microsecLow + ((double)percentageValue-0.0) * (microsecHigh - microsecLow) / (100.0 - 0.0);
-        return (int) Math.round(value);
-    }
-
-    /**
-     * Convert microseconds to percentage (used for sensitivity)
-     *
-     * @param microsecValue     to be converted microseconds
-     * @return                  converted percentage
-     */
-    private static int microsecToPercentage(int microsecValue) {
-        // mapping 50-5000ms to 0-100%
-        if(microsecValue<microsecLow) microsecValue = (int)microsecLow;
-        else if(microsecValue>microsecHigh) microsecValue = (int)microsecHigh;
-
-        // remapping formula (from 1 to 2): "low2 + (value - low1) * (high2 - low2) / (high1 - low1)"
-        double value = 0.0 + ((double)microsecValue- microsecLow) * (100.0-0.0) / (microsecHigh - microsecLow);
-
-        return (int) Math.round(value);
+        // double value = microsecLow + ((double)percentageValue-0.0) * (microsecHigh - microsecLow) / (100.0 - 0.0);
+        return (int) Math.round(expValue);
     }
 }

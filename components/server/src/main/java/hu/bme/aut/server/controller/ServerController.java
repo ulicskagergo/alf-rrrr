@@ -89,14 +89,7 @@ public class ServerController {
             }
             this.jdbcTemplate.execute("script '" + file.getAbsolutePath() + "'");
         }
-        try {
-            BufferedWriter bufferedWriter;
-            bufferedWriter = new BufferedWriter(new FileWriter("/dev/ldrchar"));
-            bufferedWriter.write(49);
-            bufferedWriter.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        lightModel.switchLights(false);
     }
 
     /**
