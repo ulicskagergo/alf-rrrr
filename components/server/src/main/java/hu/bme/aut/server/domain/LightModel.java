@@ -83,6 +83,7 @@ public final class LightModel {
      */
     private LightModel() {
         log.debug("LightModel c'tor begin at " + LocalDateTime.now().toString());
+        switchLights(false);
         changeSystemSettings(LocalTime.parse("10:00"), LocalTime.parse("18:00"), 50);
         log.debug("LightModel c'tor end at " + LocalDateTime.now().toString());
     }
@@ -130,7 +131,7 @@ public final class LightModel {
         systemOnFrom = from;
         systemOnUntil = until;
         this.sensitivity = sensitivity;
-        log.info("Settings update to {" + from + ", " + until + ", " + sensitivity);
+        log.info("Settings update to {" + from + ", " + until + ", " + sensitivity + "}");
     }
 
     /**
@@ -312,7 +313,7 @@ public final class LightModel {
     /**
      * Set the light on/off based on previous state
      *
-     * @param lightsOn  previous state of light (if on then turn off and the other way)
+     * @param lightsOn  true - switch lights on; false - switch lights off
      */
     private void switchLights(boolean lightsOn) {
         log.info("Switching lights " + (lightsOn ? "on" : "off") + " at " + LocalDateTime.now().toString());

@@ -1,5 +1,5 @@
 .idea
 target/
 server-springboot.iml
-ServerDemoApplication.run.xml
+ServerApplication.run.xml
 tmp.txt
