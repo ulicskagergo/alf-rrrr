@@ -11,10 +11,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.validation.Valid;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -65,13 +70,14 @@ public class ServerController {
     }
 
     /**
-     * Dump whole database into file with GET on /dumpdb
+     * Before destroying application, execute two tasks:
+     *      1, save the actual in-memory database into file
+     *      2, turn off the lights
      *
-     * @throws IOException  when there is a problem with dump file
+     * @throws IOException  if there is a problem with the file handling
      */
-    @RequestMapping(value = "/dumpdb")
-    @ResponseBody
-    public void dumpdb() throws IOException {
+    @PreDestroy
+    public void destroyApplication() throws IOException {
         synchronized (this.monitor) {
             File file = new File("dump.sql");
             if (file.exists()) {
@@ -79,6 +85,25 @@ public class ServerController {
             }
             this.jdbcTemplate.execute("script '" + file.getAbsolutePath() + "'");
         }
+        try {
+            BufferedWriter bufferedWriter;
+            bufferedWriter = new BufferedWriter(new FileWriter("/dev/ldrchar"));
+            bufferedWriter.write(49);
+            bufferedWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * After constructing application, load the exported database into the in-memory HSQL
+     *
+     * @throws IOException  if there is a problem with the file handling
+     */
+    @PostConstruct
+    @Sql({"dump.sql"})
+    public void startApplication() throws IOException {
+        System.out.println("Loading dumped data...");
     }
 
     /**

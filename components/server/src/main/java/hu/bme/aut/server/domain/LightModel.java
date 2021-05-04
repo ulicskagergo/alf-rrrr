@@ -344,7 +344,7 @@ public final class LightModel {
     /**
      * Set the light on/off based on previous state
      *
-     * @param lightsOn  previous state of light (if on then turn off and the other way
+     * @param lightsOn  previous state of light (if on then turn off and the other way)
      */
     private void switchLights(boolean lightsOn) {
         if (DEBUG_MODE) {
