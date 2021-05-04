@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.3
 import 'RESTCalls.js' as RESTClient
 
 Dialog {
-    id: about
+    id: setip
     width: 320
     height: 200
     modal: true

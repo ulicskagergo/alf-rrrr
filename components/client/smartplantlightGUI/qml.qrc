@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>Settings.qml</file>
         <file>Charts.qml</file>
         <file>SettingsScreen.qml</file>
         <file>StatisticsScreen.qml</file>

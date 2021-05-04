@@ -14,7 +14,6 @@ DISTFILES += \
     Charts.qml \
     SensorChart.qml \
     SetIP.qml \
-    Settings.qml \
     SettingsScreen.qml \
     StatisticsScreen.qml \
     bg-plants.jpg \
