@@ -78,7 +78,7 @@ public class MeasurementDay {
 	 */
 	@Override
 	public String toString() {
-		return "[ DEBUG ] id: " + id + ", " + toJSON().toString();
+		return "id: " + id + ", " + toJSON().toString();
 	}
 
 	/**

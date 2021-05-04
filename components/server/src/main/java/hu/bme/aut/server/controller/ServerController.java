@@ -13,15 +13,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.bind.annotation.*;
+
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.validation.Valid;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -82,25 +80,15 @@ public class ServerController {
      */
     @PreDestroy
     public void destroyApplication() throws IOException {
+        log.info("Saving database records");
         synchronized (this.monitor) {
-            File file = new File("dump.sql");
+            File file = new File("data"+LocalDateTime.now()+".sql");
             if (file.exists()) {
                 file.delete();
             }
             this.jdbcTemplate.execute("script '" + file.getAbsolutePath() + "'");
         }
         lightModel.switchLights(false);
-    }
-
-    /**
-     * After constructing application, load the exported database into the in-memory HSQL
-     *
-     * @throws IOException  if there is a problem with the file handling
-     */
-    @PostConstruct
-    @Sql({"dump.sql"})
-    public void startApplication() throws IOException {
-        System.out.println("Loading dumped data...");
     }
 
     /**
@@ -123,7 +111,7 @@ public class ServerController {
 
     /**
      * Get set sensitivity value and time range for measurements on /settings
-     * Pesudo: GET { "sensitivity": <0-100>, "from": "hh:mm", "to":"hh:mm" }  /settings
+     * Pseudo: GET { "sensitivity": <0-100>, "from": "hh:mm", "to":"hh:mm" }  /settings
      *
      * @return  response entity with http status sign and data
      */

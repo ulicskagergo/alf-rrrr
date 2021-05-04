@@ -45,7 +45,7 @@ public final class LightModel {
     /**
      * Mode switch: if kernel module does not exist it must be false
      */
-    private final boolean RASPI_MODE = true;
+    private final boolean RASPI_MODE = false;
 
     /**
      * Light model for singleton scheme

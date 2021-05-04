@@ -44,7 +44,7 @@ To test POST with ```curl```:
 ```
 
 ```bash
- curl -X POST http://localhost:8080/settings -H 'cache-control: no-cache' -H 'content-type: application/json' -d '{ "sensitivity": 0, "from": "11:00", "to":"13:00" }'
+ curl -X POST http://localhost:8080/settings -H 'cache-control: no-cache' -H 'content-type: application/json' -d '{ "sensitivity": 0, "from": "11:00", "to":"23:00" }'
 ```
 
 ```bash

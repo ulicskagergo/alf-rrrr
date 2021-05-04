@@ -133,7 +133,7 @@ public class LightData {
      */
     @Override
     public String toString() {
-        return "[ DEBUG ]" + toJSON().toString();
+        return toJSON().toString();
     }
 
     /**
