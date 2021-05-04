@@ -157,8 +157,8 @@ public class ServerController {
      * Get measurement values on given day on /data/{specified_measure_day}
      * Pseudo: GET [{"id":1001,"measureDate":"2021-03-14T15:43:11","isOn":true,"threshold":22,"actualValue":20},{..}] /data/2021-05-30
      *
-     * @param measureDate
-     * @return
+     * @param measureDate   date of the needed measurements (in format yyyy-mm-dd)
+     * @return              measurement data on the given day
      */
     @RequestMapping(value = "/data/{measure_date}")
     public ResponseEntity<List<LightData>> getDataByMeasureDate(@PathVariable("measure_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate measureDate) {
