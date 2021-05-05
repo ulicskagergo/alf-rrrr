@@ -13,6 +13,8 @@ Beside the module there is a [mock module](../components/driver/mock_light_modul
 
 ## Usage
 The kernel module is meant to be used on a raspberry pi (although it would probably work on any architecture, but make sure to change the ARCH in the Makefile in this case and adjust the GPIO parts in the code).
+
+0. Install the kernel headers ([more info here](https://www.raspberrypi.org/documentation/linux/kernel/headers.md))
 1. Copy the content of the directory `components/driver/` to the Raspberry Pi
 2. `make` 
 3. There is a simple C program beside the module source, with which the module can be easily tested. Compile this test program (something like `gcc test_ldr.c -o ldr_test`)
