@@ -45,7 +45,7 @@ public final class LightModel {
     /**
      * Mode switch: if kernel module does not exist it must be false
      */
-    private final boolean RASPI_MODE = true;
+    private final boolean RASPI_MODE = false;
 
     /**
      * Light model for singleton scheme
@@ -391,18 +391,7 @@ public final class LightModel {
         return (int) Math.round(expValue);
     }
 
-    /**
-     * Convert microsec to percentage (used when sending data to frontend)
-     *
-     * @param microsec   to be converted microsec
-     * @return                  converted percentages
-     */
-    private static int microsecToPercentage(int microsec) {
-        if(microsec>microsecHigh) {
-            microsec = microsecHigh;
-        }
-
-        double percentage = Math.log((double)microsec/(double)microsecHigh*Math.pow(1.03, 100))/Math.log(1.03);
-        return (int) Math.round(percentage);
+    public static int getMicrosecHigh() {
+        return microsecHigh;
     }
 }

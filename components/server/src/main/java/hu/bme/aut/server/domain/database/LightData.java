@@ -1,5 +1,6 @@
 package hu.bme.aut.server.domain.database;
 
+import hu.bme.aut.server.domain.LightModel;
 import org.json.simple.JSONObject;
 
 import javax.persistence.*;
@@ -146,9 +147,24 @@ public class LightData {
         obj.put("id", id);
         obj.put("measure_date", measureDate);
         obj.put("is_on", isOn);
-        obj.put("threshold", threshold);
+        obj.put("threshold", microsecToPercentage(threshold));
         obj.put("actual_value", actualValue);
         return obj;
+    }
+
+    /**
+     * Convert microsec to percentage (used when sending data to frontend)
+     *
+     * @param microsec   to be converted microsec
+     * @return                  converted percentages
+     */
+    private static int microsecToPercentage(int microsec) {
+        int microsecHigh = LightModel.getMicrosecHigh();
+        if(microsec>microsecHigh) {
+            microsec = microsecHigh;
+        }
+        double percentage = Math.log((double)microsec/(double)microsecHigh*Math.pow(1.03, 100))/Math.log(1.03);
+        return (int) Math.round(percentage);
     }
 
     /**
