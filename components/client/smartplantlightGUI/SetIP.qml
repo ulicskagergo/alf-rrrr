@@ -6,8 +6,6 @@ import 'RESTCalls.js' as RESTClient
 
 Dialog {
     id: setip
-    width: 320
-    height: 200
     modal: true
     focus: true
     anchors.centerIn: Overlay.overlay
@@ -19,7 +17,7 @@ Dialog {
         spacing: 10
         Text {
             id: ipText
-            text: "Input the address of the server (or even localhost)\n(and make sure it is up and running!)"
+            text: "Input the address of the server (default is localhost)\n(and make sure it is up and running!)"
         }
         TextField {
             focus: true

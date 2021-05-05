@@ -1,4 +1,4 @@
-var baseURL = "http://10.0.1.162:8080"
+var baseURL = "http://localhost:8080"
 const getPointsExtension = "/data"
 const settingsUpdateExtension = "/settings" // both send and receive / GET and PUSH
 const getDatesExtension = "/dates"
@@ -8,7 +8,9 @@ var dates
 
 function setIP(ipaddress) {
     console.log(ipaddress)
-    baseURL = "http://" + ipaddress + ":8080";
+    if(ipaddress!="") {
+        baseURL = "http://" + ipaddress + ":8080";
+    }
     console.log("URL is set to: " + baseURL);
 }
 
