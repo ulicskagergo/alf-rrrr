@@ -7,9 +7,6 @@ var dates
 
 function setIP(ipaddress) {
     console.log(ipaddress)
-    if(ipaddress==="10.0.1.162") {
-        console.log("same")
-    }
     if(ipaddress!=="") {
         main.baseURL = "http://" + ipaddress + ":8080";
     }
@@ -27,6 +24,16 @@ function getPoints(dateIndex) {
           // removing old points and adding the new ones
           lightValueSeries.removePoints(0, lightValueSeries.count);
           turnOnOffSeries.removePoints(0, turnOnOffSeries.count);
+
+          // sort the points based on time, just to be sure
+          pointsObj.sort(function(a, b) {
+              var adate = new Date(a.measureDate);
+              var bdate = new Date(b.measureDate);
+              var ax = adate.getHours() + adate.getMinutes()*1/60;
+              var bx = bdate.getHours() + bdate.getMinutes()*1/60;
+              return ax - bx;
+          });
+
           for(var i in pointsObj) {
               var timeDate = new Date(pointsObj[i].measureDate);
               // the hours and minutes are represented as a fraction between 0 and 24 (e.g. 14:30 -> 14.5)
