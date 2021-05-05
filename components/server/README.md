@@ -1,5 +1,8 @@
 ## Server component
 
+### Configuration options before building
+You can use dummy data instead of the kernel module (which requires GPIOs) if you switch `RASPI_MODE` in `LightModule.java` to false. 
+
 ### Build and run
 
 Install Maven:
