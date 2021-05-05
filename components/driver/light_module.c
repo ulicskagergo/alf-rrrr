@@ -199,6 +199,7 @@ static int dev_open(struct inode *inodep, struct file *filep){
    return 0;
 }
 
+// receives a read request, starts a measurement, returns it's value
 static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *offset){
     int error_count = 0;
 
