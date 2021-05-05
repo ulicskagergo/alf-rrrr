@@ -3,11 +3,11 @@
 #include <linux/device.h>         // Header to support the kernel Driver Model
 #include <linux/kernel.h>         // Contains types, macros, functions for the kernel
 #include <linux/fs.h>             // Header for the Linux file system support
-#include <linux/uaccess.h>          // Required for the copy to user function
+#include <linux/uaccess.h>        // Required for the copy to user function
 #include <linux/string.h>
 #include <linux/random.h>
 #include <linux/gpio.h>
-#include <linux/time.h>
+#include <linux/ktime.h>
 #include <linux/param.h>
 #include <linux/delay.h>
 #include <linux/interrupt.h>
@@ -17,7 +17,7 @@
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Zsofi Adam");
-MODULE_DESCRIPTION("Light and light sensor driver of the smart plant project");
+MODULE_DESCRIPTION("Light and light sensor driver of the smart plant light project");
 MODULE_VERSION("0.01");
 
 // light gpio
@@ -44,19 +44,28 @@ static ssize_t dev_write(struct file *, const char *, size_t, loff_t *);
  *  /linux/fs.h lists the callback functions that you wish to associated with your file operations
  *  using a C99 syntax structure. char devices usually implement open, read, write and release calls
  */
+
+// set the permissions of the character device
+static int permissions_dev_uevent(struct device *dev, struct kobj_uevent_env *env)
+{
+    add_uevent_var(env, "DEVMODE=%#o", 0666);
+    return 0;
+}
+
 static struct file_operations fops =
 {
    .open = dev_open,
    .read = dev_read,
    .write = dev_write,
    .release = dev_release,
+   .owner = THIS_MODULE,
 };
 
 static int __init ldr_init(void) // This will run when loaded
 {
     printk(KERN_INFO "Initializing light driver..."); 
 
-    // Try to dynamically allocate a major number for the device -- more difficult but worth it
+    // Try to dynamically allocate a major number for the device
     majorNumber = register_chrdev(0, DEVICE_NAME, &fops);
     if (majorNumber<0){
         printk(KERN_ALERT "ldrChar failed to register a major number\n");
@@ -71,6 +80,7 @@ static int __init ldr_init(void) // This will run when loaded
         printk(KERN_ALERT "Failed to register device class\n");
         return PTR_ERR(ldrcharClass);          // Correct way to return an error on a pointer
     }
+    ldrcharClass->dev_uevent = permissions_dev_uevent;
     printk(KERN_INFO "ldrChar: device class registered correctly\n");
 
     // Register the device driver
@@ -132,30 +142,30 @@ static void __exit ldr_exit(void)// This will run when unloaded
 
 ///// GPIO functionality
 
-static struct timespec time;
+static struct timespec64 time;
 
 // the mock is a random int, but I'm not sure what type the GPIO value will be, so:
 // return type might change in the future!
 static long sensor_current_value(void) {
     measurement_ended = 0;            // starting measurement
     gpio_direction_input(gpioSensor); // Set the sensor GPIO to be an input (so the condensator discharges)
-    getnstimeofday(&time);
+    ktime_get_real_ts64(&time);
     start = time.tv_nsec;
 
     int successful = 1;
     long current_jiffy, time_passed;
     while(!measurement_ended) {
-        getnstimeofday(&time);
+        ktime_get_real_ts64(&time);
         current_jiffy = time.tv_nsec;
-        time_passed = (current_jiffy - start)/1000; // time passed in us - "watchdog"
-        if(time_passed>=1000000) { successful = 0; break; } // timed out - measurement should only take around 10ms long
+        time_passed = (current_jiffy - start)/1000; // time passed in microsec - "watchdog"
+        if(time_passed>=1000000) { successful = 0; break; } // timed out - measurement should only take around 10-1000ms long
         msleep(10);
     } // waiting for interrupt to set the end time
     gpio_direction_output(gpioSensor, true);   // Set the gpio to be in output mode and on (condensator is charged again)
 
     if(successful) {
         long diff = end - start;
-        long result = diff / 1000; // convert it to us 
+        long result = diff / 1000; // convert it to microsec 
         printk(KERN_INFO "GPIO_SENSOR: Measurement is %lu microsec\n", result);
         return result;
     } else {
@@ -169,7 +179,7 @@ static long sensor_current_value(void) {
 }
 
 static irqreturn_t sensorgpio_irq_handler(unsigned int irq, void *dev_id, struct pt_regs *regs) {
-    getnstimeofday(&time);
+    ktime_get_real_ts64(&time);
     end = time.tv_nsec;
     printk(KERN_INFO "GPIO_SENSOR: Interrupt! Measurement is done\n");
     measurement_ended = 1;                   // measurement is done
