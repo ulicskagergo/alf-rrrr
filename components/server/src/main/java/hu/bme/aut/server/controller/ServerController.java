@@ -141,7 +141,8 @@ public class ServerController {
      * @param measureDate   date of the needed measurements (in format yyyy-mm-dd)
      * @return              measurement data on the given day
      */
-    @RequestMapping(value = "/data/{measure_date}")
+    @RequestMapping(value = "/data/{measure_date}",
+            produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<LightData>> getDataByMeasureDate(@PathVariable("measure_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate measureDate) {
         log.info("data points GET at day " + measureDate.toString());
         LocalDateTime measureDayTime = measureDate.atTime(0,0,0);

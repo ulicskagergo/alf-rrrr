@@ -120,7 +120,7 @@ public class LightData {
     }
 
     public int getActualValue() {
-        return actualValue;
+        return microsecToPercentage(actualValue);
     }
 
     public void setActualValue(int actualValue) {
