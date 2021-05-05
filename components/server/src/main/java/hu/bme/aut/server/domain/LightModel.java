@@ -56,7 +56,7 @@ public final class LightModel {
      * Validation boundaries
      */
     private static final int microsecHigh = 1500;
-    private static final int measurementPeriod = 10*600;
+    private static final int measurementPeriod = 10*60000;
 
     /**
      * Timer for light switch
