@@ -112,7 +112,7 @@ public class LightData {
     }
 
     public int getThreshold() {
-        return threshold;
+        return microsecToPercentage(threshold);
     }
 
     public void setThreshold(int threshold) {
