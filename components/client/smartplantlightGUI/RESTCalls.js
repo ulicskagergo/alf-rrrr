@@ -1,4 +1,3 @@
-var baseURL = "http://localhost:8080"
 const getPointsExtension = "/data"
 const settingsUpdateExtension = "/settings" // both send and receive / GET and PUSH
 const getDatesExtension = "/dates"
@@ -8,10 +7,13 @@ var dates
 
 function setIP(ipaddress) {
     console.log(ipaddress)
-    if(ipaddress!="") {
-        baseURL = "http://" + ipaddress + ":8080";
+    if(ipaddress==="10.0.1.162") {
+        console.log("same")
     }
-    console.log("URL is set to: " + baseURL);
+    if(ipaddress!=="") {
+        main.baseURL = "http://" + ipaddress + ":8080";
+    }
+    console.log("URL is set to: " + main.baseURL);
 }
 
 // get data points on a given day ( dates[dateIndex] day )
