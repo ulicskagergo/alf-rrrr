@@ -55,7 +55,7 @@ public final class LightModel {
     /**
      * Validation boundaries
      */
-    private static final double microsecHigh = 1500;        // 2000 ms
+    private static final int microsecHigh = 1500;        // 2000 ms
     private static final int measurementPeriod = 10*60000; // 15 min
 
     /**
@@ -385,10 +385,24 @@ public final class LightModel {
         if(percentageValue>100 || percentageValue<0) {
             throw new IndexOutOfBoundsException("Sensitivity should be between 0 and 100");
         }
-        // 0% is 0, 50% is around 500, 100% is 2000
+
+        // similar curve to sensor characteristics
         double expValue = Math.pow(1.03, percentageValue)/Math.pow(1.03, 100)*microsecHigh;
-        // remapping formula (from 1 to 2): "low2 + (value - low1) * (high2 - low2) / (high1 - low1)"
-        // double value = microsecLow + ((double)percentageValue-0.0) * (microsecHigh - microsecLow) / (100.0 - 0.0);
         return (int) Math.round(expValue);
+    }
+
+    /**
+     * Convert microsec to percentage (used when sending data to frontend)
+     *
+     * @param microsec   to be converted microsec
+     * @return                  converted percentages
+     */
+    private static int microsecToPercentage(int microsec) {
+        if(microsec>microsecHigh) {
+            microsec = microsecHigh;
+        }
+
+        double percentage = Math.log((double)microsec/(double)microsecHigh*Math.pow(1.03, 100))/Math.log(1.03);
+        return (int) Math.round(percentage);
     }
 }
