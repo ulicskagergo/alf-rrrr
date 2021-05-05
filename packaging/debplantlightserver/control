@@ -1,0 +1,7 @@
+Section: java
+Priority: optional
+Architecture: armhf
+Maintainer: Zsofia Adam <adamzsofi@edu.bme.hu>
+Description: Server side application of the smart plantlight, made for Raspberry PI 4B
+ It has two components, a spring REST server and a kernel driver using GPIOs
+Depends: openjdk-11-jre-headless

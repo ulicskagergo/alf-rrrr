@@ -144,8 +144,6 @@ static void __exit ldr_exit(void)// This will run when unloaded
 
 static struct timespec64 time;
 
-// the mock is a random int, but I'm not sure what type the GPIO value will be, so:
-// return type might change in the future!
 static long sensor_current_value(void) {
     measurement_ended = 0;            // starting measurement
     gpio_direction_input(gpioSensor); // Set the sensor GPIO to be an input (so the condensator discharges)
@@ -172,10 +170,6 @@ static long sensor_current_value(void) {
         printk(KERN_INFO "GPIO_SENSOR: Measurement timed out\n");
         return -1; // error value
     }
-    // for testing without GPIO usage:
-    // int value; 
-    // get_random_bytes(&value, sizeof(value));
-    // return value%1024;
 }
 
 static irqreturn_t sensorgpio_irq_handler(unsigned int irq, void *dev_id, struct pt_regs *regs) {

@@ -163,7 +163,7 @@ public class LightData {
         if(microsec>microsecHigh) {
             microsec = microsecHigh;
         }
-        double percentage = Math.log((double)microsec/(double)microsecHigh*Math.pow(1.03, 100))/Math.log(1.03);
+        double percentage = Math.log((double)microsec / (double)microsecHigh*Math.pow(1.03, 100)) / Math.log(1.03);
         return (int) Math.round(percentage);
     }
 

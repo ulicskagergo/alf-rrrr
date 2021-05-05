@@ -4,7 +4,11 @@ import QtQuick.Window 2.12
 import QtQuick.Layouts 1.3
 import QtQuick.Controls.Material 2.4
 
+import 'RESTCalls.js' as RESTClient
+
 ApplicationWindow {
+    property string baseURL: "http://localhost:8080"
+
     Image {
         id: bgPlants
         source: "bg-plants.jpg"

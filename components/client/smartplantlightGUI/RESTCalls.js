@@ -1,4 +1,3 @@
-var baseURL = "http://localhost:8080"
 const getPointsExtension = "/data"
 const settingsUpdateExtension = "/settings" // both send and receive / GET and PUSH
 const getDatesExtension = "/dates"
@@ -8,10 +7,10 @@ var dates
 
 function setIP(ipaddress) {
     console.log(ipaddress)
-    if(ipaddress!="") {
-        baseURL = "http://" + ipaddress + ":8080";
+    if(ipaddress!=="") {
+        main.baseURL = "http://" + ipaddress + ":8080";
     }
-    console.log("URL is set to: " + baseURL);
+    console.log("URL is set to: " + main.baseURL);
 }
 
 // get data points on a given day ( dates[dateIndex] day )
@@ -25,6 +24,16 @@ function getPoints(dateIndex) {
           // removing old points and adding the new ones
           lightValueSeries.removePoints(0, lightValueSeries.count);
           turnOnOffSeries.removePoints(0, turnOnOffSeries.count);
+
+          // sort the points based on time, just to be sure
+          pointsObj.sort(function(a, b) {
+              var adate = new Date(a.measureDate);
+              var bdate = new Date(b.measureDate);
+              var ax = adate.getHours() + adate.getMinutes()*1/60;
+              var bx = bdate.getHours() + bdate.getMinutes()*1/60;
+              return ax - bx;
+          });
+
           for(var i in pointsObj) {
               var timeDate = new Date(pointsObj[i].measureDate);
               // the hours and minutes are represented as a fraction between 0 and 24 (e.g. 14:30 -> 14.5)
