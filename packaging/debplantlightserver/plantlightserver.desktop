@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Plant Light Server
+Comment=Plant Light Server to Raspberry PI 4B
+Exec=/usr/bin/plantlightserver
+Terminal=true
+Type=Application
+Categories=Utility
+StartupNotify=true 
